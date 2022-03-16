@@ -1,7 +1,7 @@
 #complete CAPITALIZED sections
 
-#AUTHOR: 
-#DATE:
+#AUTHOR: Aakash Senthilnathan
+#DATE: 3/15/22
 
 #import libraries
 import time
@@ -47,13 +47,14 @@ while True:
 
     
         #TAKE/SAVE/UPLOAD A PICTURE 
-        name = ""     #Last Name, First Initial  ex. FoxJ
+        name = "SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/FlatSatChallenge/Images/YOURFOLDER/%s%s' % (name,t)) #change directory to your folder
+            imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder
     
             #<YOUR CODE GOES HERE>#
             
     
     #PAUSE
+
