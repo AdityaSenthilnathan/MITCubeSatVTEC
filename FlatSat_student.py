@@ -3,7 +3,7 @@
 #AUTHOR: Aakash Senthilnathan
 #DATE: 3/15/22
 
-#import libraries
+import libraries
 import time
 import os
 import board
@@ -12,7 +12,7 @@ import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
 
-#setup imu and camera
+setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
@@ -34,7 +34,7 @@ def git_push():
 
     
 #SET THRESHOLD
-threshold = 
+threshold = 100
 
 
 #read acceleration
