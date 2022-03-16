@@ -53,7 +53,7 @@ while True:
             imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder
     
             #<YOUR CODE GOES HERE>#
-            
+            camera.capture(imgname)
     
     #PAUSE
 
