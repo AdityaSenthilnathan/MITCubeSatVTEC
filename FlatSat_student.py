@@ -9,7 +9,7 @@ import os
 import board
 import busio
 import adafruit_bno055
-#from git import Repo
+from git import Repo
 from picamera import PiCamera
 
 #setup imu and camera
