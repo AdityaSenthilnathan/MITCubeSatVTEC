@@ -3,8 +3,7 @@
 #AUTHOR: Aakash Senthilnathan
 #DATE: 3/15/22
 
-from tkinter.tix import IMAGETEXT
-import libraries
+#import libraries
 import time
 from time import sleep
 import os
@@ -42,38 +41,26 @@ threshold = 50
 
 #read acceleration
 while True:
+ #TAKE/SAVE/UPLOAD A PICTURE 
     accelX, accelY, accelZ = sensor.acceleration
-<<<<<<< HEAD
     print("acceleration: ", sensor.acceleration)
     print("Threshold: ", threshold)
      #CHECK IF READINGS ARE ABOVE THRESHOLD
     if threshold < sensor.acceleration:
         camera.start_preview()
-=======
-    while(sensor.acceleartion > threshold):
-    #CHECK IF READINGS ARE ABOVE THRESHOLD
->>>>>>> ccff96ec4ce962f34175198ba4cf67160377cca1
-        #PAUSE
-        sleep(5)
-        #take a photo
-        camera.capture(imgname)
-
-   
-
-    
-        #TAKE/SAVE/UPLOAD A PICTURE 
-        name = "SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
+         name = "SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder
+            imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder    
+        #PAUSE
+        sleep(5)
+        print("Taking photo in 5 seconds")
+        #take a photo
+        camera.capture(imgname)
 
             #<YOUR CODE GOES HERE>#
-<<<<<<< HEAD
             git_push()    
             camera.stop_preview()
-=======
-            camera.capture(imgname)
-    
->>>>>>> ccff96ec4ce962f34175198ba4cf67160377cca1
     #PAUSE
+    sleep(5)
