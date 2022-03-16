@@ -40,7 +40,7 @@ threshold = 100
 #read acceleration
 while True:
     accelX, accelY, accelZ = sensor.acceleration
-
+    while(sensor.acceleartion > threshold):
     #CHECK IF READINGS ARE ABOVE THRESHOLD
         #PAUSE
 
