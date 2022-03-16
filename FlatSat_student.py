@@ -43,11 +43,16 @@ threshold = 50
 #read acceleration
 while True:
     accelX, accelY, accelZ = sensor.acceleration
+<<<<<<< HEAD
     print("acceleration: ", sensor.acceleration)
     print("Threshold: ", threshold)
      #CHECK IF READINGS ARE ABOVE THRESHOLD
     if threshold < sensor.acceleration:
         camera.start_preview()
+=======
+    while(sensor.acceleartion > threshold):
+    #CHECK IF READINGS ARE ABOVE THRESHOLD
+>>>>>>> ccff96ec4ce962f34175198ba4cf67160377cca1
         #PAUSE
         sleep(5)
         #take a photo
@@ -64,6 +69,11 @@ while True:
             imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder
 
             #<YOUR CODE GOES HERE>#
+<<<<<<< HEAD
             git_push()    
             camera.stop_preview()
+=======
+            camera.capture(imgname)
+    
+>>>>>>> ccff96ec4ce962f34175198ba4cf67160377cca1
     #PAUSE
