@@ -1,6 +1,6 @@
 #complete CAPITALIZED sections
 
-#AUTHOR: Hyunwoo Lee
+#AUTHOR: Hyunwoo Lee/Aakash Senthilnathan
 #DATE: 3/15/22
 
 #import libraries
@@ -47,13 +47,12 @@ while True:
      #CHECK IF READINGS ARE ABOVE THRESHOLD
     if accel>threshold:
         sleep(photoPauseTime)
-        name = "LeeH"     #Last Name, First Initial  ex. FoxJ
+        name = "LeeH/SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
             imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder   
-            img = camera.capture(img.jpg) #take a photo
-            img.save(imgname)
-            git_push(imgname)
+            img = camera.capture(imagename+ "/img.jpg") #take a photo
+            git_push(img)
     #PAUSE
     sleep(loopPauseTime)
