@@ -46,6 +46,7 @@ while True:
     
      #CHECK IF READINGS ARE ABOVE THRESHOLD
     if accel>threshold:
+        print("Taking picture in 5 seconds")
         sleep(photoPauseTime)
         name = "LeeH/SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
         
