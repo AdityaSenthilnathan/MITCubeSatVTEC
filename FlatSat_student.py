@@ -1,9 +1,10 @@
 #complete CAPITALIZED sections
 
-#AUTHOR: Aakash Senthilnathan
+#AUTHOR: Hyunwoo Lee
 #DATE: 3/15/22
 
 #import libraries
+from numpy import sqrt
 import time
 from time import sleep
 import os
@@ -13,11 +14,10 @@ import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
 
-setup imu and camera
+# setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
-camera.start_preview()
 
 #bonus: function for uploading image to Github
 def git_push():
@@ -33,34 +33,27 @@ def git_push():
     except:
         print('Couldn\'t upload to git')
 
-
-    
 #SET THRESHOLD
-threshold = 50
-
+threshold = 9.81 # m/s^2
+photoPauseTime = 5 # s
+loopPauseTime = 5 # s
 
 #read acceleration
 while True:
  #TAKE/SAVE/UPLOAD A PICTURE 
     accelX, accelY, accelZ = sensor.acceleration
-    print("acceleration: ", sensor.acceleration)
-    print("Threshold: ", threshold)
+    accel=sqrt(accelX**2 + accelY**2 + accelZ**2)
+    
      #CHECK IF READINGS ARE ABOVE THRESHOLD
-    if threshold < sensor.acceleration:
-        camera.start_preview()
-         name = "SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
+    if accel>threshold:
+        sleep(photoPauseTime)
+        name = "LeeH"     #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder    
-        #PAUSE
-        sleep(5)
-        print("Taking photo in 5 seconds")
-        #take a photo
-        camera.capture(imgname)
-
-            #<YOUR CODE GOES HERE>#
-            git_push()    
-            camera.stop_preview()
+            imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder   
+            img = camera.capture(img.jpg) #take a photo
+            img.save(imgname)
+            git_push(imgname)
     #PAUSE
-    sleep(5)
+    sleep(loopPauseTime)
