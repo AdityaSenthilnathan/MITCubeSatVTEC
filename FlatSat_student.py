@@ -22,7 +22,7 @@ camera = PiCamera()
 #bonus: function for uploading image to Github
 def git_push():
     try:
-        repo = Repo('/home/pi/FlatSatChallenge') #PATH TO YOUR GITHUB REPO
+        repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
         repo.git.add('Images') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
@@ -52,7 +52,7 @@ while True:
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/FlatSatChallenge/Images/FileSource/%s%s' % (name,t)) #change directory to your folder   
+            imgname = ('/home/pi/MITCubeSatSatickens/Images/FileSource/%s%s' % (name,t)) #change directory to your folder   
             img = camera.capture(imgname+ ".jpg") #take a photo
             git_push()
     #PAUSE
