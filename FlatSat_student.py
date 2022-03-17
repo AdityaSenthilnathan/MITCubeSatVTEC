@@ -49,7 +49,7 @@ while True:
     if accel>threshold:
         print("Taking picture in 5 seconds")
         sleep(photoPauseTime)
-        name = "LeeH/SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
+        name = "LeeH_SenthilnathanA"     #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
