@@ -25,10 +25,12 @@ def pitch_am(accelX,accelY,accelZ):
 def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
     roll = np.deg2rad( roll_am(accelX,accelY,accelZ))
     pitch = np.deg2rad( pitch_am(accelX,accelY,accelZ))
+    
     mag_x = (magX * np.cos(pitch) +
              magY * np.sin(roll) * np.sin(pitch) + 
              magZ * np.cos(roll) * np.cos(roll))
-    mag_y
+
+    mag_y = magY * np.cos(roll) - magZ * np.sin(roll)
     return np.rad2deg ( np.arctan2 (-mag_y, mag_x) )
 
 #Activity 2: RPY based on gyroscope
