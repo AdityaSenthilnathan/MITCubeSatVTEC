@@ -25,7 +25,7 @@ def pitch_am(accelX,accelY,accelZ):
 def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
     roll = np.deg2rad( roll_am(accelX,accelY,accelZ))
     pitch = np.deg2rad( pitch_am(accelX,accelY,accelZ))
-    
+
     mag_x = (magX * np.cos(pitch) +
              magY * np.sin(roll) * np.sin(pitch) + 
              magZ * np.cos(roll) * np.cos(roll))
@@ -53,23 +53,39 @@ def set_initial(mag_offset = [0,0,0]):
     magX, magY, magZ = sensor1.magnetometer #gauss
     #Calibrate magnetometer readings. Defaults to zero until you
     #write the code
-    magX = magX - offset[0]
-    magY = magY - offset[1]
-    magZ = magZ - offset[2]
+    magX = magX - mag_offset[0]
+    magY = magY - mag_offset[1]
+    magZ = magZ - mag_offset[2]
     roll = roll_am(accelX, accelY,accelZ)
     pitch = pitch_am(accelX,accelY,accelZ)
     yaw = yaw_am(accelX,accelY,accelZ,magX,magY,magZ)
     print("Initial angle set.")
     return [roll,pitch,yaw]
 
-def calibrate_mag():
-    #TODO: Set up lists, time, etc
-    #print("Preparing to calibrate magnetometer. Please wave around.")
-    #time.sleep(3)
-    #print("Calibrating...")
-    #TODO: Calculate calibration constants
-   # print("Calibration complete.")
-    return [0,0,0]
+def calibrate_mag(dataRate = 50, collectionPeriod = 5):
+    #dataRate in Hz
+    #collectionPeriod in sec
+
+    nPoints = dataRate * collectionPeriod
+    waitTime = 1/dataRate
+
+    print("Preparing to calibrate magnetometer. Please wave around.")
+    time.sleep(3)
+    print("Calibrating...")
+
+    mag = []
+
+    for i in range(nPoints):
+        mag.append(set_initial())
+        time.sleep(waitTime)
+    mag = np.array(mag).tranpose()
+    minAll = np.min(mag, axis=1)
+    maxAll = np.max(mag, axis=1)
+    calib = (minAll + maxAll) / 2
+    
+    print("Calibration complete.")
+
+    return calib
 
 def calibrate_gyro():
     #TODO
