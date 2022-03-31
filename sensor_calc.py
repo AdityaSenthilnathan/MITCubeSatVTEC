@@ -15,12 +15,12 @@ sensor2 = adafruit_fxas21002c.FXAS21002C(i2c)
 
 #Activity 1: RPY based on accelerometer and magnetometer
 def roll_am(accelX,accelY,accelZ):
-    #TODO
-    return roll
+    roll = np.arctan2(accelY / np.sqrt(accelX**2 + accelZ**2))
+    return np.rad2deg(roll) 
 
 def pitch_am(accelX,accelY,accelZ):
-    #TODO
-    return pitch
+    pitch = np.arctan2(accelX / np.sqrt(accelY**2 + accelZ**2))
+    return np.rad2deg(pitch)
 
 def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
     #TODO
