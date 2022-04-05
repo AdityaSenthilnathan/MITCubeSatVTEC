@@ -8,17 +8,17 @@ import board
 import busio
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor1 = adafruit_bno055(i2c)
-sensor2 = adafruit_bno055(i2c)
+sensor1 = adafruit_bno055.BNO055_I2C(i2c)
+sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 
 
 #Activity 1: RPY based on accelerometer and magnetometer
 def roll_am(accelX,accelY,accelZ):
-    roll = np.arctan2(accelY / np.sqrt(accelX**2 + accelZ**2))
+    roll = np.arctan2(accelY, np.sqrt(accelX**2 + accelZ**2))
     return np.rad2deg(roll) 
 
 def pitch_am(accelX,accelY,accelZ):
-    pitch = np.arctan2(accelX / np.sqrt(accelY**2 + accelZ**2))
+    pitch = np.arctan2(accelX, np.sqrt(accelY**2 + accelZ**2))
     return np.rad2deg(pitch)
 
 def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
@@ -48,19 +48,18 @@ def set_initial(mag_offset = [0,0,0]):
     print("Preparing to set initial angle. Please hold the IMU still.")
     time.sleep(3)
     print("Setting angle...")
-    accelX, accelY, accelZ = sensor1.accelerometer #m/s^2
-    magX, magY, magZ = sensor1.magnetometer #gauss
+    accelX, accelY, accelZ = sensor1.acceleration #m/s^2
+    magX, magY, magZ = sensor1.magnetic #gauss
     #Calibrate magnetometer readings. Defaults to zero until you
     #write the code
     magX = magX - mag_offset[0]
-    magY = magY - mag_offset[1]
-    magZ = magZ - mag_offset[2]
+    magY = magY - mag_offset[0]
+    magZ = magZ - mag_offset[0]
     roll = roll_am(accelX, accelY,accelZ)
     pitch = pitch_am(accelX,accelY,accelZ)
     yaw = yaw_am(accelX,accelY,accelZ,magX,magY,magZ)
     print("Initial angle set.")
     return [roll,pitch,yaw]
-
 def calibrate_mag(dataRate = 50, collectionPeriod = 5):
     #dataRate in Hz
     #collectionPeriod in sec
@@ -86,11 +85,11 @@ def calibrate_mag(dataRate = 50, collectionPeriod = 5):
 
     return calib
 
-def calibrate_gyro():
+#def calibrate_gyro():
     #TODO
     #print("Preparing to calibrate gyroscope. Put down the board and do not touch it.")
     #time.sleep(3)
     #print("Calibrating...")
     #TODO
     #print("Calibration complete.")
-    return [0, 0, 0]
+    #return [0, 0, 0]
