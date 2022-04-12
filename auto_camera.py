@@ -17,7 +17,7 @@ camera = PiCamera()
 #Code to take a picture at a given offset angle
 def capture(dir ='roll', target_angle = 30):
     #Calibration lines should remain commented out until you implement calibration
-    #offset_mag = calibrate_mag()
+    offset_mag = calibrate_mag()
     #offset_gyro =calibrate_gyro()
     initial_angle = set_initial(offset_mag)
     prev_angle = initial_angle
@@ -26,9 +26,11 @@ def capture(dir ='roll', target_angle = 30):
         accelX, accelY, accelZ = sensor1.accelerometer #m/s^2
         magX, magY, magZ = sensor1.magnetometer #gauss
 	#Calibrate magnetometer readings
-        #magX = magX - offset_mag[0]
-        #magY = magY - offset_mag[1]
-        #magZ = magZ - offset_mag[2]
+        magX = magX - offset_mag[0]
+        magY = magY - offset_mag[1]
+        magZ = magZ - offset_mag[2]
+        accelX = accelX - offset_accel[0]
+        
         gyroX, gyroY, gyroZ = sensor2.gyroscope #rad/s
         #Convert to degrees and calibrate
         #gyroX = gyroX *180/np.pi - offset_gyro[0]
