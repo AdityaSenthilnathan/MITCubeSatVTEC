@@ -1,5 +1,4 @@
 from mimetypes import init
-import adafruit_fxos8700
 import adafruit_bno055
 import adafruit_fxas21002c
 import time
