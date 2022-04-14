@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 from matplotlib import style
 import numpy as np
 import sys
-from sensor_calc import *
+import sensor_calc as sc 
 
 
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -44,9 +44,9 @@ def animate(i, xs, type,y1,y2,y3, mag_offset, gyro_offset, initial_angle):
     xs.append(time.time())
 
     if type == 'am':
-       y1.append(roll_am(accelX,accelY,accelZ))
-       y2.append(pitch_am(accelX,accelY,accelZ))
-       y3.append(yaw_am(accelX,accelY,accelZ,magX,magY,magZ))
+       y1.append(sc.roll_am(accelX,accelY,accelZ))
+       y2.append(sc.pitch_am(accelX,accelY,accelZ))
+       y3.append(sc.yaw_am(accelX,accelY,accelZ,magX,magY,magZ))
        ax.clear()
        ax.plot(xs,y1,label = "Roll")
        ax.plot(xs,y2,label = "Pitch")
@@ -61,9 +61,9 @@ def animate(i, xs, type,y1,y2,y3, mag_offset, gyro_offset, initial_angle):
            y3.append(prev_ang[2])
        else:
            delT = xs[-1] - xs[-2]
-           y1.append(roll_gy(prev_ang[0],delT,gyroY))
-           y2.append(pitch_gy(prev_ang[1],delT,gyroX))
-           y3.append(yaw_gy(prev_ang[2],delT,gyroZ))
+           y1.append(sc.roll_gy(prev_ang[0],delT,gyroY))
+           y2.append(sc.pitch_gy(prev_ang[1],delT,gyroX))
+           y3.append(sc.yaw_gy(prev_ang[2],delT,gyroZ))
 
        ax.clear()
        ax.plot(xs,y1,label = "Roll")
@@ -85,9 +85,9 @@ def animate(i, xs, type,y1,y2,y3, mag_offset, gyro_offset, initial_angle):
     plt.xlabel('Time')
 
 def plot_data(type = 'am'):
-    mag_offset = calibrate_mag()
-    initial_angle = set_initial(mag_offset)
-    gyro_offset = calibrate_gyro()
+    mag_offset = sc.calibrate_mag()
+    initial_angle = sc.set_initial(mag_offset)
+    gyro_offset = sc.calibrate_gyro()
     ani = animation.FuncAnimation(fig, animate, fargs =(xs,type,y1,y2,y3,mag_offset,gyro_offset,initial_angle), interval = 1000)
     plt.show()
 
