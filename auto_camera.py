@@ -11,7 +11,7 @@ import sys
 import sensor_calc as sc
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor1 = adafruit_fxos8700.FXOS8700(i2c)
+sensor1 = adafruit_fxos8700(i2c)
 sensor2 = adafruit_fxas21002c.FXAS21002C(i2c)
 camera = PiCamera()
 
@@ -39,7 +39,7 @@ def capture(which_angle ='roll', target_angle = 30, method = "am", tol = 0.5, re
 
         #TODO: Everything else! Be sure to not take a picture on exactly a
         #certain angle: give yourself some margin for error. 
-        if method == "am":
+        if method == "am" :
             if which_angle == 'roll':
                 chosen_angle = sc.roll_am(accelX,accelY,accelZ) - initial_angle[0]
             elif which_angle == 'pitch':
