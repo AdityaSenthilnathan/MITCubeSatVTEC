@@ -1,5 +1,6 @@
 from mimetypes import init
 import adafruit_fxos8700
+import adafruit_bno055
 import adafruit_fxas21002c
 import time
 import os
@@ -11,7 +12,7 @@ import sys
 import sensor_calc as sc
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor1 = adafruit_fxos8700.FXOS8700_I2C(i2c)
+sensor1 = adafruit_bno055.BNO055_I2C(i2c)
 sensor2 = adafruit_fxas21002c.FXAS21002C_I2C(i2c)
 camera = PiCamera()
 
