@@ -48,8 +48,8 @@ def set_initial(mag_offset = [0,0,0]):
     print("Preparing to set initial angle. Please hold the IMU still.")
     time.sleep(3)
     print("Setting angle...")
-    accelX, accelY, accelZ = sensor1.accelerometer #m/s^2
-    magX, magY, magZ = sensor1.magnetometer #gauss
+    accelX, accelY, accelZ = sensor1.acceleration #m/s^2
+    magX, magY, magZ = sensor1.magnetization #gauss
     #Calibrate magnetometer readings. Defaults to zero until you
     #write the code
     magX = magX - mag_offset[0]
