@@ -8,8 +8,8 @@ import board
 import busio
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor1 = adafruit_bno055(i2c)
-sensor2 = adafruit_bno055(i2c)
+sensor1 = adafruit_bno055.BNO055_I2C(i2c)
+sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 
 
 #Activity 1: RPY based on accelerometer and magnetometer
