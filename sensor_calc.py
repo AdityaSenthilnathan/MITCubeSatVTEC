@@ -34,13 +34,13 @@ def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
 
 #Activity 2: RPY based on gyroscope
 def roll_gy(prev_angle, delT, gyro):
-    #TODO
+    roll = prev_angle - gyro*delT
     return roll
 def pitch_gy(prev_angle, delT, gyro):
-    #TODO
+    pitch = prev_angle - gyro*delT
     return pitch
 def yaw_gy(prev_angle, delT, gyro):
-    #TODO
+    yaw = prev_angle - gyro*delT
     return yaw
 
 def set_initial(mag_offset = [0,0,0]):
@@ -86,11 +86,14 @@ def calibrate_mag(dataRate = 50, collectionPeriod = 5):
 
     return calib
 
-def calibrate_gyro():
-    #TODO
+def calibrate_gyro(dataRate = 50, collectionPeriod = 5):
+    nPoints = dataRate * collectionPeriod
+    waitTime = 1/dataRate
     print("Preparing to calibrate gyroscope. Put down the board and do not touch it.")
     time.sleep(3)
     print("Calibrating...")
-    #TODO
+    
+    gyro = []
+
     print("Calibration complete.")
     return [0, 0, 0]
