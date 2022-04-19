@@ -86,11 +86,14 @@ def calibrate_mag(dataRate = 50, collectionPeriod = 5):
 
     return calib
 
-def calibrate_gyro():
-    #TODO
+def calibrate_gyro(dataRate = 50, collectionPeriod = 5):
+    nPoints = dataRate * collectionPeriod
+    waitTime = 1/dataRate
     print("Preparing to calibrate gyroscope. Put down the board and do not touch it.")
     time.sleep(3)
     print("Calibrating...")
-    #TODO
+    
+    gyro = []
+
     print("Calibration complete.")
     return [0, 0, 0]
