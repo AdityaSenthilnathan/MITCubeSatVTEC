@@ -59,9 +59,10 @@ def set_initial(mag_offset = [0,0,0]):
     pitch = pitch_am(accelX,accelY,accelZ)
     yaw = yaw_am(accelX,accelY,accelZ,magX,magY,magZ)
     print("Initial angle set.")
+    print (roll,pitch, yaw)
     return [roll,pitch,yaw]
 
-def calibrate_mag(dataRate = 50, collectionPeriod = 5):
+def calibrate_mag(dataRate = 10, collectionPeriod = 1):
     #dataRate in Hz
     #collectionPeriod in sec
 
@@ -77,7 +78,7 @@ def calibrate_mag(dataRate = 50, collectionPeriod = 5):
     for i in range(nPoints):
         mag.append(set_initial())
         time.sleep(waitTime)
-    mag = np.array(mag).tranpose()
+    mag = np.transpose(np.array(mag))
     minAll = np.min(mag, axis=1)
     maxAll = np.max(mag, axis=1)
     calib = (minAll + maxAll) / 2
