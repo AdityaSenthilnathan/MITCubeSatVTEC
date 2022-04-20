@@ -77,7 +77,7 @@ def capture(which_angle ='roll', target_angle = 30, method = "am", tol = 0.5, re
             name = "Satickens"
             t = time.strftime("_%H%M%S")      # current time string
             imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder   
-            img = camera.capture(imgname+ ".jpg") #take a photo
+            image = camera.capture(imgname+ ".jpg") #take a photo
             git_push()
             break
         time.sleep(1/refresh_rate)
