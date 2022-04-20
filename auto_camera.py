@@ -1,6 +1,5 @@
 from mimetypes import init
-import adafruit_fxos8700
-import adafruit_fxas21002c
+import adafruit_bno055
 import time
 import os
 import board
@@ -9,11 +8,25 @@ from picamera import PiCamera
 import numpy as np
 import sys
 import sensor_calc as sc
+from git import Repo
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor1 = adafruit_fxos8700.FXOS8700(i2c)
-sensor2 = adafruit_fxas21002c.FXAS21002C(i2c)
+sensor1 = adafruit_bno055.BNO055_I2C(i2c)
+sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
+
+def git_push():
+    try:
+        repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
+        repo.git.add('Images') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.index.commit('New Photo')
+        print('made the commit')
+        origin = repo.remote('origin')
+        print('added remote')
+        origin.push()
+        print('pushed changes')
+    except:
+        print('Couldn\'t upload to git')
 
 #Code to take a picture at a given offset angle
 def capture(which_angle ='roll', target_angle = 30, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
@@ -24,8 +37,8 @@ def capture(which_angle ='roll', target_angle = 30, method = "am", tol = 0.5, re
     #prev_angle = initial_angle
     print("Begin moving camera.")
     while True:
-        accelX, accelY, accelZ = sensor1.accelerometer #m/s^2
-        magX, magY, magZ = sensor1.magnetometer #gauss
+        accelX, accelY, accelZ = sensor1.acceleration #m/s^2
+        magX, magY, magZ = sensor1.magnetic #gauss
 	#Calibrate magnetometer readings
         magX = magX - offset_mag[0]
         magY = magY - offset_mag[1]
@@ -61,7 +74,11 @@ def capture(which_angle ='roll', target_angle = 30, method = "am", tol = 0.5, re
             break #abort trying to take an image
 
         if np.abs(chosen_angle - target_angle) < tol:
-            image = camera.capture()
+            name = "Satickens"
+            t = time.strftime("_%H%M%S")      # current time string
+            imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder   
+            img = camera.capture(imgname+ ".jpg") #take a photo
+            git_push()
             break
         time.sleep(1/refresh_rate)
 
