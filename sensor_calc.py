@@ -33,14 +33,14 @@ def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
     return np.rad2deg ( np.arctan2 (-mag_y, mag_x) )
 
 #Activity 2: RPY based on gyroscope
-def roll_gy(prev_angle, delT, gyro):
-    roll = prev_angle - gyro*delT
+def roll_gy(prev_angle, delT, gyroY):
+    roll = prev_angle - gyroY*delT
     return roll
-def pitch_gy(prev_angle, delT, gyro):
-    pitch = prev_angle - gyro*delT
+def pitch_gy(prev_angle, delT, gyroX):
+    pitch = prev_angle - gyroX*delT
     return pitch
-def yaw_gy(prev_angle, delT, gyro):
-    yaw = prev_angle - gyro*delT
+def yaw_gy(prev_angle, delT, gyroZ):
+    yaw = prev_angle - gyroZ*delT
     return yaw
 
 def set_initial(mag_offset = [0,0,0]):
@@ -87,7 +87,7 @@ def calibrate_mag(dataRate = 10, collectionPeriod = 1):
 
     return calib
 
-def calibrate_gyro(dataRate = 50, collectionPeriod = 5):
+def calibrate_gyro(dataRate = 10, collectionPeriod = 1):
     nPoints = dataRate * collectionPeriod
     waitTime = 1/dataRate
     print("Preparing to calibrate gyroscope. Put down the board and do not touch it.")
@@ -100,7 +100,8 @@ def calibrate_gyro(dataRate = 50, collectionPeriod = 5):
         gyro.append(sensor2.gyro)  #rad/s
         time.sleep(waitTime)
     gyro = np.transpose(np.array(gyro))
-    gyro_calib = np.mean(gyro)
-
+    minAll = np.min(gyro, axis=1)
+    maxAll = np.max(gyro, axis=1)
+    gyro_calib = (minAll + maxAll) / 2
     print("Calibration complete.")
     return gyro_calib
