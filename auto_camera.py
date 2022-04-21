@@ -19,23 +19,23 @@ camera = PiCamera()
 def capture(which_angle ='roll', target_angle = 30, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
     #Calibration lines should remain commented out until you implement calibration
     offset_mag = sc.calibrate_mag()
-    #offset_gyro =calibrate_gyro()
+    offset_gyro =sc.calibrate_gyro()
     initial_angle = sc.set_initial(offset_mag)
     #prev_angle = initial_angle
     print("Begin moving camera.")
     while True:
-        accelX, accelY, accelZ = sensor1.accelerometer #m/s^2
-        magX, magY, magZ = sensor1.magnetometer #gauss
+        accelX, accelY, accelZ = sensor1.acceleration #m/s^2
+        magX, magY, magZ = sensor1.magnetic #gauss
 	#Calibrate magnetometer readings
         magX = magX - offset_mag[0]
         magY = magY - offset_mag[1]
         magZ = magZ - offset_mag[2]
 
-        #gyroX, gyroY, gyroZ = sensor2.gyroscope #rad/s
+        gyroX, gyroY, gyroZ = sensor2.gyro #rad/s
         #Convert to degrees and calibrate
-        #gyroX = gyroX *180/np.pi - offset_gyro[0]
-        #gyroY = gyroY *180/np.pi - offset_gyro[1]
-        #gyroZ = gyroZ *180/np.pi - offset_gyro[2]
+        gyroX = gyroX *180/np.pi - offset_gyro[0]
+        gyroY = gyroY *180/np.pi - offset_gyro[1]
+        gyroZ = gyroZ *180/np.pi - offset_gyro[2]
 
         #TODO: Everything else! Be sure to not take a picture on exactly a
         #certain angle: give yourself some margin for error. 

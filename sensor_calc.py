@@ -76,7 +76,7 @@ def calibrate_mag(dataRate = 10, collectionPeriod = 1):
     mag = []
 
     for i in range(nPoints):
-        mag.append(set_initial())
+        mag.append(sensor1.magnetic)
         time.sleep(waitTime)
     mag = np.transpose(np.array(mag))
     minAll = np.min(mag, axis=1)
@@ -96,5 +96,11 @@ def calibrate_gyro(dataRate = 50, collectionPeriod = 5):
     
     gyro = []
 
+    for i in range(nPoints):
+        gyro.append(sensor2.gyro)  #rad/s
+        time.sleep(waitTime)
+    gyro = np.transpose(np.array(gyro))
+    gyro_calib = np.mean(gyro)
+
     print("Calibration complete.")
-    return [0, 0, 0]
+    return gyro_calib
