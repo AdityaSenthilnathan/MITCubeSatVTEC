@@ -14,6 +14,8 @@ import busio
 import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
+import cv2 as cv
+import numpy as np
 
 # setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
