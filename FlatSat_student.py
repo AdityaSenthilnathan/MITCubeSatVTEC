@@ -14,6 +14,8 @@ import busio
 import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
+import cv2 as cv
+import numpy as np
 
 # setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -55,6 +57,7 @@ while True:
             t = time.strftime("_%H%M%S")      # current time string
             imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder   
             img = camera.capture(imgname+ ".jpg") #take a photo
+            img = cv.imread(img)
             git_push()
     #PAUSE
     sleep(loopPauseTime)
