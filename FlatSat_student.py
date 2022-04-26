@@ -56,8 +56,9 @@ while True:
         if name:
             t = time.strftime("_%H%M%S")      # current time string
             imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder   
+            camera.resolution = (2592, 1944)
+            camera.framerate = 15
             img = camera.capture(imgname+ ".jpg") #take a photo
-            img = cv.imread(img)
             git_push()
     #PAUSE
     sleep(loopPauseTime)
