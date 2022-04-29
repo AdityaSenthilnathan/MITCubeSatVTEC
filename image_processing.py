@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-file = ""
+file = "turtle.jpg"
 image = cv2.imread(file)
 
 rfilt = image[:, :, 2]
