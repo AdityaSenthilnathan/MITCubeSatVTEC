@@ -16,13 +16,14 @@ def pShow(img, colorspace="HSV"):
 file = "color.jpg"
 img = cv2.imread(file)
 #img = cv2.resize(img, (640,680))
-
+ 
 plt.imshow(np.flip(img, axis=2))
 plt.show()
 
 imhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 plt.imshow(imhsv, cmap="hsv")
 plt.show()
+
 
 fil_imhsv = cv2.boxFilter(imhsv, -1, (40, 40))
 plt.imshow(fil_imhsv, cmap="hsv")
@@ -94,6 +95,117 @@ print(contours)
 
 
 
+
+
+# thresh_hue_r = np.logical_and(241 < fil_imhsv[:, :, 1], fil_imhsv[:, :, 1] < 300)
+# plt.imshow(thresh_hue_r, cmap="gray")
+# plt.show()
+
+# thresh_sat_r = np.logical_and( 100< fil_imhsv[:, :, 0], fil_imhsv[:, :, 0] < 150)
+# plt.imshow(thresh_sat_r, cmap="gray")
+# plt.show()
+
+# thresh_HS_r = np.logical_and(thresh_hue_r, thresh_sat_r)
+# plt.imshow(thresh_HS_r, cmap="gray")
+# plt.show()
+
+# thresh_val_r =  np.logical_and(100 <= fil_imhsv[:, :, 2], fil_imhsv[:, :, 2] < 250)
+# plt.imshow(thresh_val_r, cmap="gray")
+# plt.show()
+
+# img_thresh_r = np.logical_and(thresh_HS_r, thresh_val_r)
+# plt.imshow(img_thresh_r, cmap="gray")
+# plt.show()
+
+# img_fil_no_norm_r = cv2.boxFilter(thresh_HS_r.astype(int), -1, (10,10), normalize=False)
+# plt.imshow(img_fil_no_norm_r)
+# plt.show()
+
+# img_thresh_locs_r = np.argwhere(img_fil_no_norm_r > 10)
+# print(img_thresh_locs_r)
+
+# average_loc_r = np.average(img_thresh_locs_r, axis=0)
+
+# plt.imshow(np.flip(img, axis=2))
+# plt.plot(img_thresh_locs_r[:, 1], img_thresh_locs_r[:, 0], 'ro')
+
+# plt.show()
+
+# print(np.average(img_thresh_locs_r, axis=0))
+
+# def sensor_position(pix_x, pix_y, res_x, res_y):
+#     return ((pix_x - res_x / 2) / res_x * 0.00368, (pix_y - res_y / 2) / res_y * 0.00276)
+
+# def angle(x, y):
+#     print((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
+#     return np.degrees((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
+
+# position = sensor_position(average_loc_r[1], average_loc_r[0], 640, 360)
+# print(position)
+# angle(*position)
+
+# no_norm_8 = img_fil_no_norm_r.astype(np.uint8)
+# thresh, no_norm_out = cv2.threshold(no_norm_8, 1000 * 255 / np.max(img_fil_no_norm_r), 255, cv2.THRESH_BINARY)
+
+# contours, hierarchy = cv2.findContours(no_norm_out, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+# print(contours)
+# [np.average(contour, axis=0) for contour in contours]
+
+# thresh_hue_r = np.logical_and(36 < fil_imhsv[:, :, 1], fil_imhsv[:, :, 1] < 70)
+# plt.imshow(thresh_hue_r, cmap="gray")
+# plt.show()
+
+# thresh_sat_r = np.logical_and(100< fil_imhsv[:, :, 0], fil_imhsv[:, :, 0] < 155)
+# plt.imshow(thresh_sat_r, cmap="gray")
+# plt.show()
+
+# thresh_HS_r = np.logical_and(thresh_hue_r, thresh_sat_r)
+# plt.imshow(thresh_HS_r, cmap="gray")
+# plt.show()
+
+# thresh_val_r =  np.logical_and(100 <= fil_imhsv[:, :, 2], fil_imhsv[:, :, 2] < 155)
+# plt.imshow(thresh_val_r, cmap="gray")
+# plt.show()
+
+# img_thresh_r = np.logical_and(thresh_HS_r, thresh_val_r)
+# plt.imshow(img_thresh_r, cmap="gray")
+# plt.show()
+
+# img_fil_no_norm_r = cv2.boxFilter(thresh_HS_r.astype(int), -1, (10,10), normalize=False)
+# plt.imshow(img_fil_no_norm_r)
+# plt.show()
+
+# img_thresh_locs_r = np.argwhere(img_fil_no_norm_r > 10)
+# print(img_thresh_locs_r)
+
+# average_loc_r = np.average(img_thresh_locs_r, axis=0)
+
+# plt.imshow(np.flip(img, axis=2))
+# plt.plot(img_thresh_locs_r[:, 1], img_thresh_locs_r[:, 0], 'ro')
+
+# plt.show()
+
+# print(np.average(img_thresh_locs_r, axis=0))
+
+# def sensor_position(pix_x, pix_y, res_x, res_y):
+#     return ((pix_x - res_x / 2) / res_x * 0.00368, (pix_y - res_y / 2) / res_y * 0.00276)
+
+# def angle(x, y):
+#     print((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
+#     return np.degrees((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
+
+# position = sensor_position(average_loc_r[1], average_loc_r[0], 640, 360)
+# print(position)
+# angle(*position)
+
+# no_norm_8 = img_fil_no_norm_r.astype(np.uint8)
+# thresh, no_norm_out = cv2.threshold(no_norm_8, 1000 * 255 / np.max(img_fil_no_norm_r), 255, cv2.THRESH_BINARY)
+
+# contours, hierarchy = cv2.findContours(no_norm_out, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+# print(contours)
+# [np.average(contour, axis=0) for contour in contours]
 
 
 
