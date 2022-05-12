@@ -40,7 +40,7 @@ threshold = 0 # m/s^2 (Estimated Acceleration felt at LEO)
 photoPauseTime = 5 # s
 loopPauseTime = 5 # s
 
-#read acceleration
+
 while True:
  #TAKE/SAVE/UPLOAD A PICTURE 
     accelX, accelY, accelZ = sensor.acceleration
@@ -48,8 +48,8 @@ while True:
     
      #CHECK IF READINGS ARE ABOVE THRESHOLD
     if accel>threshold:
-        print("Taking picture in 5 seconds")
-        sleep(photoPauseTime)
+        # print("Taking picture in 5 seconds")
+        # sleep(photoPauseTime)
         name = "Satickens"   #Last Name, First Initial  ex. FoxJ
         
         if name:
