@@ -37,7 +37,7 @@ def git_push():
 
 #Code to take a picture at a given offset angle
 
-def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
+def capture(which_angle ='pitch', target_angle = 180, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
     #Calibration lines should remain commented out until you implement calibration
     offset_mag = sc.calibrate_mag()
     offset_gyro =sc.calibrate_gyro()
@@ -101,7 +101,6 @@ def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, re
                 img_num += 1
                 git_push()
                 break
-    
         time.sleep(1/refresh_rate)
 
     return image
