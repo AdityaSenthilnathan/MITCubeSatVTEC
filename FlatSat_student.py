@@ -17,7 +17,7 @@ from picamera import PiCamera
 import numpy as np
 
 rep_time = 10
-run_time = 20
+run_time = 30
 
 start_time = time.time()
 
