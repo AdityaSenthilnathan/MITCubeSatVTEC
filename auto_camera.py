@@ -16,7 +16,7 @@ sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
 
 rep_time = 20
-run_time = 60
+run_time = 20
 start_time = time.time()
 i = 1 
 tol_t = 0.01
@@ -105,7 +105,8 @@ while run_time > (time.time() - start_time):
                             image = camera.capture(imgname+ ".jpg") #take a photo
                             img_num += 1
                             git_push()
-                            
+                            break
+            
                 time.sleep(1/refresh_rate)
 
             return image
