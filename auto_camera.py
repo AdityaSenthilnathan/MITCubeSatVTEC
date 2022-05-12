@@ -16,7 +16,7 @@ sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
 
 rep_time = 20
-run_time = 60
+run_time = 20
 start_time = time.time()
 i = 1 
 tol_t = 0.01
@@ -24,7 +24,7 @@ tol_t = 0.01
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
-        repo.git.add('Images') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('hi') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
         origin = repo.remote('origin')
@@ -105,6 +105,7 @@ while run_time > (time.time() - start_time):
                 time.sleep(1/refresh_rate)
 
             return image
+
 
 
 if __name__ == '__main__':
