@@ -33,14 +33,14 @@ def yaw_am(accelX,accelY,accelZ,magX,magY,magZ):
     return np.rad2deg ( np.arctan2 (-mag_y, mag_x) )
 
 #Activity 2: RPY based on gyroscope
-def roll_gy(prev_angle, delT, gyroY):
-    roll = prev_angle - gyroY*delT
+def roll_gy(prev_angle, delT, gyro):
+    roll = prev_angle - gyro*delT
     return roll
-def pitch_gy(prev_angle, delT, gyroX):
-    pitch = prev_angle - gyroX*delT
+def pitch_gy(prev_angle, delT, gyro):
+    pitch = prev_angle - gyro*delT
     return pitch
-def yaw_gy(prev_angle, delT, gyroZ):
-    yaw = prev_angle - gyroZ*delT
+def yaw_gy(prev_angle, delT, gyro):
+    yaw = prev_angle - gyro*delT
     return yaw
 
 def set_initial(mag_offset = [0,0,0]):
