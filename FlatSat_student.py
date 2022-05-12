@@ -54,7 +54,7 @@ while True:
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/MITCubeSatSatickens/final_project/%s%s' % (name,t)) #change directory to your folder 
+            imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
             git_push()
     #PAUSE
