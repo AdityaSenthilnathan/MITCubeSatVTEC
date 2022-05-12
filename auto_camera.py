@@ -40,7 +40,7 @@ while run_time > (time.time() - start_time):
     target_time = i*rep_time
     
     if abs(target_time-(time.time() - start_time)) < tol_t:
-        def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
+        def capture(which_angle ='roll', target_angle = 0, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
             #Calibration lines should remain commented out until you implement calibration
             offset_mag = sc.calibrate_mag()
             offset_gyro =sc.calibrate_gyro()
