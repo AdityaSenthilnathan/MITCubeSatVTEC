@@ -16,8 +16,8 @@ from git import Repo
 from picamera import PiCamera
 import numpy as np
 
-rep_time = 3
-run_time = 60
+rep_time = 10
+run_time = 20
 
 start_time = time.time()
 
