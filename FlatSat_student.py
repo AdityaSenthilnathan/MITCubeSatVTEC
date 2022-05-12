@@ -37,8 +37,8 @@ def git_push():
 
 #SET THRESHOLD
 threshold = 0 # m/s^2 (Estimated Acceleration felt at LEO)
-photoPauseTime = 5 # s
-loopPauseTime = 5 # s
+photoPauseTime = 1 # s
+loopPauseTime = 1 # s
 
 
 while True:
@@ -48,13 +48,13 @@ while True:
     
      #CHECK IF READINGS ARE ABOVE THRESHOLD
     if accel>threshold:
-        # print("Taking picture in 5 seconds")
-        # sleep(photoPauseTime)
+        print("Taking picture in 5 seconds")
+        sleep(photoPauseTime)
         name = "Satickens"   #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder 
+            imgname = ('/home/pi/MITCubeSatSatickens/final_project/%s%s' % (name,t)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
             git_push()
     #PAUSE
