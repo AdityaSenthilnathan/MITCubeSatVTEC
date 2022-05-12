@@ -16,7 +16,7 @@ sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
 
 rep_time = 20
-run_time = 20
+run_time = 60
 start_time = time.time()
 i = 1 
 tol_t = 0.01
@@ -96,12 +96,16 @@ while run_time > (time.time() - start_time):
                     break #abort trying to take an image
 
                 if np.abs(chosen_angle - target_angle) < tol:
-                    name = "Chick"
-                    imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
-                    image = camera.capture(imgname+ ".jpg") #take a photo
-                    img_num += 1
-                    git_push()
-                    break
+                    while run_time > (time.time() - start_time):
+                        target_time = i*rep_time
+    
+                        if abs(target_time-(time.time() - start_time)) < tol_t:
+                            name = "Chick"
+                            imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
+                            image = camera.capture(imgname+ ".jpg") #take a photo
+                            img_num += 1
+                            git_push()
+                            
                 time.sleep(1/refresh_rate)
 
             return image
