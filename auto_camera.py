@@ -66,50 +66,49 @@ while run_time > (time.time() - start_time):
 
                 #TODO: Everything else! Be sure to not take a picture on exactly a
                 #certain angle: give yourself some margin for error. 
-                if method == "am":
-                    if which_angle == 'roll':
-                        chosen_angle = sc.roll_am(accelX,accelY,accelZ) - prev_angle[0]
-                    elif which_angle == 'pitch':
-                        chosen_angle = sc.pitch_am(accelX,accelY,accelZ) - prev_angle[1]
-                    elif which_angle == "yaw":
-                        chosen_angle = sc.yaw_am(accelX,accelY,accelZ) - prev_angle[2]
-                    else:
-                        print("Invalid Input: Must be roll, pitch, or yaw")
-                        image = None
-                        break #abort trying to take an image
-                        #return None
-                elif method == "gyro":
-                    if which_angle == 'roll':
-                        chosen_angle = sc.roll_gy(prev_angle[0]) + gyroZ
-                    elif which_angle == 'pitch':
-                        chosen_angle = sc.pitch_gy(prev_angle[1]) + gyroY
-                    elif which_angle == "yaw":
-                        chosen_angle = sc.yaw_gy(prev_angle[2]) + gyroX
-                    else:
-                        print("Invalid Input: Must be roll, pitch, or yaw")
-                        image = None
-                        break #abort trying to take an image
-                        #return None
-                else:
-                    print("Invalid Input: Must be am or gyro")
-                    image = None
-                    break #abort trying to take an image
+                while run_time > (time.time() - start_time):
+                    target_time = i*rep_time
+                    if abs(target_time-(time.time() - start_time)) < tol_t:
+                        if method == "am":
+                            if which_angle == 'roll':
+                                chosen_angle = sc.roll_am(accelX,accelY,accelZ) - prev_angle[0]
+                            elif which_angle == 'pitch':
+                                chosen_angle = sc.pitch_am(accelX,accelY,accelZ) - prev_angle[1]
+                            elif which_angle == "yaw":
+                                chosen_angle = sc.yaw_am(accelX,accelY,accelZ) - prev_angle[2]
+                            else:
+                                print("Invalid Input: Must be roll, pitch, or yaw")
+                                image = None
+                                break #abort trying to take an image
+                                #return None
+                        elif method == "gyro":
+                            if which_angle == 'roll':
+                                chosen_angle = sc.roll_gy(prev_angle[0]) + gyroZ
+                            elif which_angle == 'pitch':
+                                chosen_angle = sc.pitch_gy(prev_angle[1]) + gyroY
+                            elif which_angle == "yaw":
+                                chosen_angle = sc.yaw_gy(prev_angle[2]) + gyroX
+                            else:
+                                print("Invalid Input: Must be roll, pitch, or yaw")
+                                image = None
+                                break #abort trying to take an image
+                                #return None
+                        else:
+                            print("Invalid Input: Must be am or gyro")
+                            image = None
+                            break #abort trying to take an image
 
-                if np.abs(chosen_angle - target_angle) < tol:
-                    while run_time > (time.time() - start_time):
-                        target_time = i*rep_time
-    
-                        if abs(target_time-(time.time() - start_time)) < tol_t:
+                        if np.abs(chosen_angle - target_angle) < tol:
                             name = "Chick"
                             imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
                             image = camera.capture(imgname+ ".jpg") #take a photo
                             img_num += 1
                             git_push()
                             break
-            
+                    
                 time.sleep(1/refresh_rate)
 
-            return image
+                return image
 
 
 
