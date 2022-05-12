@@ -36,7 +36,7 @@ def git_push():
         print('Couldn\'t upload to git')
 
 #SET THRESHOLD
-threshold = 12 # m/s^2 (Estimated Acceleration felt at LEO)
+threshold = 0 # m/s^2 (Estimated Acceleration felt at LEO)
 photoPauseTime = 5 # s
 loopPauseTime = 5 # s
 
