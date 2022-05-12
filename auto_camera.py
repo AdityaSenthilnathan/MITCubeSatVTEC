@@ -105,11 +105,10 @@ while run_time > (time.time() - start_time):
                             img_num += 1
                             git_push()
                             break
+                        
+                    return image
                     
                 time.sleep(1/refresh_rate)
-
-                return image
-
 
 
 if __name__ == '__main__':
