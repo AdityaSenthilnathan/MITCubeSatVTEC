@@ -16,6 +16,16 @@ from git import Repo
 from picamera import PiCamera
 import numpy as np
 
+rep_time = 3
+run_time = 60
+
+start_time = time.time()
+
+i = 1 
+tol = 0.01
+
+
+
 # setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_bno055.BNO055_I2C(i2c)
@@ -25,7 +35,7 @@ camera = PiCamera()
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
-        repo.git.add('Images') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('hi') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
         origin = repo.remote('origin')
@@ -41,21 +51,20 @@ photoPauseTime = 1 # s
 loopPauseTime = 1 # s
 
 
-while True:
+while run_time > (time.time() - start_time):
+    target_time = i*rep_time
  #TAKE/SAVE/UPLOAD A PICTURE 
-    accelX, accelY, accelZ = sensor.acceleration
-    accel=sqrt(accelX**2 + accelY**2 + accelZ**2)
-    
-     #CHECK IF READINGS ARE ABOVE THRESHOLD
-    if accel>threshold:
-        print("Taking picture in 5 seconds")
-        sleep(photoPauseTime)
+    if abs(target_time-(time.time() - start_time)) < tol:
+        print("hello world")
+        
+        i += 1
+   
         name = "Satickens"   #Last Name, First Initial  ex. FoxJ
         
         if name:
             t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder 
+            imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name,i)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
             git_push()
     #PAUSE
-    sleep(loopPauseTime)
+    
