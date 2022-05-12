@@ -14,7 +14,6 @@ import busio
 import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
-from .cv2 import cv
 import numpy as np
 
 # setup imu and camera
