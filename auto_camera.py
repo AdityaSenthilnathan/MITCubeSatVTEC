@@ -19,7 +19,7 @@ camera = PiCamera()
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
-        repo.git.add('hi') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('egg') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
         origin = repo.remote('origin')
@@ -90,19 +90,19 @@ def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, re
         if np.abs(chosen_angle - target_angle) < tol:
             time.sleep(10)
             name = "Chick"
-            imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
             print("Took Photo 1")
             img_num += 1
             time.sleep(10)
             name = "Chick"
-            imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
             print("Took Photo 2")
             img_num += 1
             time.sleep(10)
             name = "Chick"
-            imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
             print("Took Photo 3")
             img_num += 1

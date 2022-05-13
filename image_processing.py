@@ -15,7 +15,7 @@ def pShow(img, colorspace="HSV"):
 
 
 for frame_num in range(1, 4):    #range including only 1, 2 , and 3
-    file = f'hi/Chick{frame_num}.jpg' #reads the chick photos in hi folder
+    file = f'egg/Chick{frame_num}.jpg' #reads the chick photos in hi folder
     print(file)
     try: #loops the different types of files from the range
         img = cv2.imread(file)

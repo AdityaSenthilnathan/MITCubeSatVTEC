@@ -35,7 +35,7 @@ camera = PiCamera()
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
-        repo.git.add('hi') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('egg') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
         origin = repo.remote('origin')
@@ -61,7 +61,7 @@ while run_time > (time.time() - start_time):
         name = "Chick"   #Last Name, First Initial  ex. FoxJ
         
         if name:
-            imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name,i)) #change directory to your folder 
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name,i)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
             i += 1
     #PAUSE
