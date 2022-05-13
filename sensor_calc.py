@@ -62,7 +62,7 @@ def set_initial(mag_offset = [0,0,0]):
     print (roll,pitch, yaw)
     return [roll,pitch,yaw]
 
-def calibrate_mag(dataRate = 5, collectionPeriod = 1):
+def calibrate_mag(dataRate = 10, collectionPeriod = 1):
     #dataRate in Hz
     #collectionPeriod in sec
 
@@ -87,7 +87,7 @@ def calibrate_mag(dataRate = 5, collectionPeriod = 1):
 
     return calib
 
-def calibrate_gyro(dataRate = 5, collectionPeriod = 1):
+def calibrate_gyro(dataRate = 10, collectionPeriod = 1):
     nPoints = dataRate * collectionPeriod
     waitTime = 1/dataRate
     print("Preparing to calibrate gyroscope. Put down the board and do not touch it.")

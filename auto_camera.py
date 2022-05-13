@@ -38,7 +38,7 @@ def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, re
     offset_gyro =sc.calibrate_gyro()
     initial_angle = sc.set_initial(offset_mag)
     prev_angle = initial_angle
-    print("Begin moving camera.")
+    print("Starting Mission")
 
     img_num = 1
     
@@ -92,16 +92,19 @@ def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, re
             name = "Chick"
             imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
+            print("Took Photo 1")
             img_num += 1
             time.sleep(10)
             name = "Chick"
             imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
+            print("Took Photo 2")
             img_num += 1
             time.sleep(10)
             name = "Chick"
             imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
+            print("Took Photo 3")
             img_num += 1
             git_push()
             break
