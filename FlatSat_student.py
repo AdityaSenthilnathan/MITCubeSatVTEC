@@ -55,17 +55,15 @@ while run_time > (time.time() - start_time):
     target_time = i*rep_time
  #TAKE/SAVE/UPLOAD A PICTURE 
     if abs(target_time-(time.time() - start_time)) < tol:
-        print("hello world")
+        print("Took photo")
         
-        i += 1
    
-        name = "Satickens"   #Last Name, First Initial  ex. FoxJ
+        name = "Chick"   #Last Name, First Initial  ex. FoxJ
         
         if name:
-            t = time.strftime("_%H%M%S")      # current time string
             imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name,i)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
-            
+            i += 1
     #PAUSE
 
 git_push()
