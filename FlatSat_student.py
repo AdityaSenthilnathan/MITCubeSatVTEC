@@ -14,8 +14,17 @@ import busio
 import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
-from .cv2 import cv
 import numpy as np
+
+rep_time = 10
+run_time = 30
+
+start_time = time.time()
+
+i = 1 
+tol = 0.01
+
+
 
 # setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -26,7 +35,7 @@ camera = PiCamera()
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
-        repo.git.add('Images') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('egg') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
         origin = repo.remote('origin')
@@ -37,26 +46,25 @@ def git_push():
         print('Couldn\'t upload to git')
 
 #SET THRESHOLD
-threshold = 12 # m/s^2 (Estimated Acceleration felt at LEO)
-photoPauseTime = 5 # s
-loopPauseTime = 5 # s
+threshold = 0 # m/s^2 (Estimated Acceleration felt at LEO)
+photoPauseTime = 1 # s
+loopPauseTime = 1 # s
 
-#read acceleration
-while True:
+
+while run_time > (time.time() - start_time):
+    target_time = i*rep_time
  #TAKE/SAVE/UPLOAD A PICTURE 
-    accelX, accelY, accelZ = sensor.acceleration
-    accel=sqrt(accelX**2 + accelY**2 + accelZ**2)
-    
-     #CHECK IF READINGS ARE ABOVE THRESHOLD
-    if accel>threshold:
-        print("Taking picture in 5 seconds")
-        sleep(photoPauseTime)
-        name = "Satickens"   #Last Name, First Initial  ex. FoxJ
+    if abs(target_time-(time.time() - start_time)) < tol:
+        print("Took photo")
+        
+   
+        name = "Chick"   #Last Name, First Initial  ex. FoxJ
         
         if name:
-            t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder 
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name,i)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
-            git_push()
+            i += 1
     #PAUSE
-    sleep(loopPauseTime)
+
+git_push()
+    

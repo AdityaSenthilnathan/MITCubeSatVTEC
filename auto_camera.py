@@ -15,10 +15,11 @@ sensor1 = adafruit_bno055.BNO055_I2C(i2c)
 sensor2 = adafruit_bno055.BNO055_I2C(i2c)
 camera = PiCamera()
 
+
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
-        repo.git.add('Images') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('egg') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
         origin = repo.remote('origin')
@@ -28,18 +29,23 @@ def git_push():
     except:
         print('Couldn\'t upload to git')
 
+
 #Code to take a picture at a given offset angle
-def capture(which_angle ='pitch', target_angle = 60, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
+
+def capture(which_angle ='pitch', target_angle = 0, method = "am", tol = 0.5, refresh_rate = 50): #tol is tolerance of the angle
     #Calibration lines should remain commented out until you implement calibration
     offset_mag = sc.calibrate_mag()
     offset_gyro =sc.calibrate_gyro()
     initial_angle = sc.set_initial(offset_mag)
     prev_angle = initial_angle
-    print("Begin moving camera.")
+    print("Starting Mission")
+
+    img_num = 1
+    
     while True:
         accelX, accelY, accelZ = sensor1.acceleration #m/s^2
         magX, magY, magZ = sensor1.magnetic #gauss
-	#Calibrate magnetometer readings
+    #Calibrate magnetometer readings
         magX = magX - offset_mag[0]
         magY = magY - offset_mag[1]
         magZ = magZ - offset_mag[2]
@@ -82,14 +88,31 @@ def capture(which_angle ='pitch', target_angle = 60, method = "am", tol = 0.5, r
             break #abort trying to take an image
 
         if np.abs(chosen_angle - target_angle) < tol:
-            name = "Satickens"
-            t = time.strftime("_%H%M%S")      # current time string
-            imgname = ('/home/pi/MITCubeSatSatickens/Images/%s%s' % (name,t)) #change directory to your folder   
+            time.sleep(10)
+            name = "Chick"
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name, img_num)) #change directory to your folder   
             image = camera.capture(imgname+ ".jpg") #take a photo
+            print("Took Photo 1")
+            img_num += 1
+            time.sleep(10)
+            name = "Chick"
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name, img_num)) #change directory to your folder   
+            image = camera.capture(imgname+ ".jpg") #take a photo
+            print("Took Photo 2")
+            img_num += 1
+            time.sleep(10)
+            name = "Chick"
+            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name, img_num)) #change directory to your folder   
+            image = camera.capture(imgname+ ".jpg") #take a photo
+            print("Took Photo 3")
+            img_num += 1
             git_push()
             break
         time.sleep(1/refresh_rate)
 
     return image
+
+
+
 if __name__ == '__main__':
     capture(*sys.argv[1:])
