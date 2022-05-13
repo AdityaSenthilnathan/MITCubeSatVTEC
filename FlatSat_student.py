@@ -65,6 +65,8 @@ while run_time > (time.time() - start_time):
             t = time.strftime("_%H%M%S")      # current time string
             imgname = ('/home/pi/MITCubeSatSatickens/hi/%s%d' % (name,i)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
-            git_push()
+            
     #PAUSE
+
+git_push()
     
