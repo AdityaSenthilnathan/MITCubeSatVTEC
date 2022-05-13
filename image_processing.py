@@ -12,22 +12,24 @@ def pShow(img, colorspace="HSV"):
 
     plt.imshow(cimg)
     plt.show()
-for frame_num in range(1, 4):    
-    file = f'hi/Chick{frame_num}.jpg'
+
+
+for frame_num in range(1, 4):    #range including only 1, 2 , and 3
+    file = f'hi/Chick{frame_num}.jpg' #reads the chick photos in hi folder
     print(file)
-    try:
+    try: #loops the different types of files from the range
         img = cv2.imread(file)
         #img = cv2.resize(img, (640,680))
         
-        plt.imshow(np.flip(img, axis=2))
+        plt.imshow(np.flip(img, axis=2)) #flips the img to be in RGB
         plt.show()
 
-        imhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        imhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) #converts BGR to HSV
         plt.imshow(imhsv, cmap="hsv")
         plt.show()
 
 
-        fil_imhsv = cv2.boxFilter(imhsv, -1, (40, 40))
+        fil_imhsv = cv2.boxFilter(imhsv, -1, (40, 40)) #blurs the image
         plt.imshow(fil_imhsv, cmap="hsv")
         plt.show()
 
@@ -40,27 +42,27 @@ for frame_num in range(1, 4):
         plt.imshow(fil_imhsv[:, :, 2])
         plt.show()
 
-        thresh_hue = np.logical_and( 29 < fil_imhsv[:, :, 1], fil_imhsv[:, :, 1] < 360)
+        thresh_hue = np.logical_and( 29 < fil_imhsv[:, :, 1], fil_imhsv[:, :, 1] < 360) #represent the hue range
         plt.imshow(thresh_hue, cmap="gray")
-        plt.show()
+        plt.show() 
 
-        thresh_sat = np.logical_and(0 < fil_imhsv[:, :, 0], fil_imhsv[:, :, 0] < 360)
+        thresh_sat = np.logical_and(0 < fil_imhsv[:, :, 0], fil_imhsv[:, :, 0] < 360) # represent the saturation range
         plt.imshow(thresh_sat, cmap="gray")
         plt.show()
 
-        thresh_HS = np.logical_and(thresh_hue, thresh_sat)
+        thresh_HS = np.logical_and(thresh_hue, thresh_sat) # represent the the combinded ranges of saturation and hue
         plt.imshow(thresh_HS, cmap="gray")
         plt.show()
 
-        thresh_val =  np.logical_and(100 <= fil_imhsv[:, :, 2], fil_imhsv[:, :, 2] < 300)
+        thresh_val =  np.logical_and(100 <= fil_imhsv[:, :, 2], fil_imhsv[:, :, 2] < 300) # repsent the value range
         plt.imshow(thresh_val, cmap="gray")
         plt.show()
 
-        img_thresh = np.logical_and(thresh_HS, thresh_val)
+        img_thresh = np.logical_and(thresh_HS, thresh_val) #combines HS and value ranges
         plt.imshow(img_thresh, cmap="gray")
         plt.show()
 
-        img_fil_no_norm = cv2.boxFilter(thresh_HS.astype(int), -1, (10,10), normalize=False)
+        img_fil_no_norm = cv2.boxFilter(thresh_HS.astype(int), -1, (10,10), normalize=False) #filters with blur again and normalizes
         plt.imshow(img_fil_no_norm)
         plt.show()
 
