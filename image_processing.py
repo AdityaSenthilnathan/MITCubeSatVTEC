@@ -12,86 +12,90 @@ def pShow(img, colorspace="HSV"):
 
     plt.imshow(cimg)
     plt.show()
+for frame_num in range(1, 4):    
+    file = f'hi/Chick{frame_num}.jpg'
+    print(file)
+    try:
+        img = cv2.imread(file)
+        #img = cv2.resize(img, (640,680))
+        
+        plt.imshow(np.flip(img, axis=2))
+        plt.show()
 
-file = "color.jpg"
-img = cv2.imread(file)
-#img = cv2.resize(img, (640,680))
- 
-plt.imshow(np.flip(img, axis=2))
-plt.show()
-
-imhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-plt.imshow(imhsv, cmap="hsv")
-plt.show()
+        imhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        plt.imshow(imhsv, cmap="hsv")
+        plt.show()
 
 
-fil_imhsv = cv2.boxFilter(imhsv, -1, (40, 40))
-plt.imshow(fil_imhsv, cmap="hsv")
-plt.show()
+        fil_imhsv = cv2.boxFilter(imhsv, -1, (40, 40))
+        plt.imshow(fil_imhsv, cmap="hsv")
+        plt.show()
 
-plt.imshow(fil_imhsv[:, :, 0])
-plt.show()
+        plt.imshow(fil_imhsv[:, :, 0])
+        plt.show()
 
-plt.imshow(fil_imhsv[:, :, 1])
-plt.show()
+        plt.imshow(fil_imhsv[:, :, 1])
+        plt.show()
 
-plt.imshow(fil_imhsv[:, :, 2])
-plt.show()
+        plt.imshow(fil_imhsv[:, :, 2])
+        plt.show()
 
-thresh_hue = np.logical_and( 29 < fil_imhsv[:, :, 1], fil_imhsv[:, :, 1] < 360)
-plt.imshow(thresh_hue, cmap="gray")
-plt.show()
+        thresh_hue = np.logical_and( 29 < fil_imhsv[:, :, 1], fil_imhsv[:, :, 1] < 360)
+        plt.imshow(thresh_hue, cmap="gray")
+        plt.show()
 
-thresh_sat = np.logical_and(0 < fil_imhsv[:, :, 0], fil_imhsv[:, :, 0] < 360)
-plt.imshow(thresh_sat, cmap="gray")
-plt.show()
+        thresh_sat = np.logical_and(0 < fil_imhsv[:, :, 0], fil_imhsv[:, :, 0] < 360)
+        plt.imshow(thresh_sat, cmap="gray")
+        plt.show()
 
-thresh_HS = np.logical_and(thresh_hue, thresh_sat)
-plt.imshow(thresh_HS, cmap="gray")
-plt.show()
+        thresh_HS = np.logical_and(thresh_hue, thresh_sat)
+        plt.imshow(thresh_HS, cmap="gray")
+        plt.show()
 
-thresh_val =  np.logical_and(100 <= fil_imhsv[:, :, 2], fil_imhsv[:, :, 2] < 300)
-plt.imshow(thresh_val, cmap="gray")
-plt.show()
+        thresh_val =  np.logical_and(100 <= fil_imhsv[:, :, 2], fil_imhsv[:, :, 2] < 300)
+        plt.imshow(thresh_val, cmap="gray")
+        plt.show()
 
-img_thresh = np.logical_and(thresh_HS, thresh_val)
-plt.imshow(img_thresh, cmap="gray")
-plt.show()
+        img_thresh = np.logical_and(thresh_HS, thresh_val)
+        plt.imshow(img_thresh, cmap="gray")
+        plt.show()
 
-img_fil_no_norm = cv2.boxFilter(thresh_HS.astype(int), -1, (10,10), normalize=False)
-plt.imshow(img_fil_no_norm)
-plt.show()
+        img_fil_no_norm = cv2.boxFilter(thresh_HS.astype(int), -1, (10,10), normalize=False)
+        plt.imshow(img_fil_no_norm)
+        plt.show()
 
-img_thresh_locs = np.argwhere(img_fil_no_norm > 10)
-print(img_thresh_locs)
+        img_thresh_locs = np.argwhere(img_fil_no_norm > 10)
+        print(img_thresh_locs)
 
-average_loc = np.average(img_thresh_locs, axis=0)
+        average_loc = np.average(img_thresh_locs, axis=0)
 
-plt.imshow(np.flip(img, axis=2))
-plt.plot(img_thresh_locs[:, 1], img_thresh_locs[:, 0], 'ro')
+        plt.imshow(np.flip(img, axis=2))
+        plt.plot(img_thresh_locs[:, 1], img_thresh_locs[:, 0], 'ro')
 
-plt.show()
+        plt.show()
 
-print(np.average(img_thresh_locs, axis=0))
+        print(np.average(img_thresh_locs, axis=0))
 
-def sensor_position(pix_x, pix_y, res_x, res_y):
-    return ((pix_x - res_x / 2) / res_x * 0.00368, (pix_y - res_y / 2) / res_y * 0.00276)
+        def sensor_position(pix_x, pix_y, res_x, res_y):
+            return ((pix_x - res_x / 2) / res_x * 0.00368, (pix_y - res_y / 2) / res_y * 0.00276)
 
-def angle(x, y):
-    print((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
-    return np.degrees((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
+        def angle(x, y):
+            print((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
+            return np.degrees((np.arctan(x / 0.00304), np.arctan(y / 0.00304)))
 
-position = sensor_position(average_loc[1], average_loc[0], 640, 360)
-print(position)
-angle(*position)
+        position = sensor_position(average_loc[1], average_loc[0], 640, 360)
+        print(position)
+        angle(*position)
 
-no_norm_8 = img_fil_no_norm.astype(np.uint8)
-thresh, no_norm_out = cv2.threshold(no_norm_8, 1000 * 255 / np.max(img_fil_no_norm), 255, cv2.THRESH_BINARY)
+        no_norm_8 = img_fil_no_norm.astype(np.uint8)
+        thresh, no_norm_out = cv2.threshold(no_norm_8, 1000 * 255 / np.max(img_fil_no_norm), 255, cv2.THRESH_BINARY)
 
-contours, hierarchy = cv2.findContours(no_norm_out, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(no_norm_out, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-print(contours)
-[np.average(contour, axis=0) for contour in contours]
+        print(contours)
+        [np.average(contour, axis=0) for contour in contours]
+    except:
+        pass
 
 
 
