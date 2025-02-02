@@ -21,25 +21,23 @@ def detect_large_color_regions(image, mask):
     """Detects large regions of red, yellow, and black in the given image."""
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
-    # Define color thresholds
-    lower_red1, upper_red1 = np.array([0, 100, 100]), np.array([10, 255, 255])
-    lower_red2, upper_red2 = np.array([160, 100, 100]), np.array([180, 255, 255])
-    lower_yellow, upper_yellow = np.array([20, 100, 100]), np.array([30, 255, 255])
-    lower_black, upper_black = np.array([0, 0, 0]), np.array([180, 255, 50])
+    # Define color thresholds with a wider range to capture varying fire colors
+    lower_red1, upper_red1 = np.array([0, 50, 50]), np.array([10, 255, 255])
+    lower_red2, upper_red2 = np.array([160, 50, 50]), np.array([180, 255, 255])
+    lower_yellow, upper_yellow = np.array([15, 50, 50]), np.array([35, 255, 255])
     
     # Create masks for colors
     mask_red = cv2.inRange(hsv, lower_red1, upper_red1) + cv2.inRange(hsv, lower_red2, upper_red2)
     mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
-    mask_black = cv2.inRange(hsv, lower_black, upper_black)
     
     # Combine color masks
-    combined_mask = mask_red + mask_yellow + mask_black
+    combined_mask = mask_red + mask_yellow
     combined_mask = cv2.bitwise_and(combined_mask, mask)  # Apply change mask to remove small specks
     
-    # Fill gaps in the mask
-    kernel = np.ones((10, 10), np.uint8)
-    combined_mask = cv2.dilate(combined_mask, kernel, iterations=3)
-    combined_mask = cv2.erode(combined_mask, kernel, iterations=3)
+    # Fill gaps in the mask and smooth edges
+    kernel = np.ones((15, 15), np.uint8)
+    combined_mask = cv2.morphologyEx(combined_mask, cv2.MORPH_CLOSE, kernel)
+    combined_mask = cv2.morphologyEx(combined_mask, cv2.MORPH_OPEN, kernel)
     
     # Find contours
     contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -50,7 +48,7 @@ def detect_large_color_regions(image, mask):
     
     return output, combined_mask, contours
 
-def display_results(reference, current, output, color_mask, original_reference, original_current, blurred_reference, blurred_current, sharpened_reference, sharpened_current):
+def display_results(reference, current, output, color_mask, original_reference, original_current, blurred_reference, blurred_current, sharpened_reference, sharpened_current, fire_status):
     """Displays original images and detected changes."""
     plt.figure(figsize=(20, 10))
     
@@ -94,18 +92,21 @@ def display_results(reference, current, output, color_mask, original_reference, 
     plt.title("Sharpened Current Image")
     plt.axis("off")
     
+    plt.suptitle(fire_status, fontsize=16, color='red')
+    plt.text(0.5, 0.5, fire_status, fontsize=20, color='red', ha='center', va='center', transform=plt.gcf().transFigure)
     plt.show()
 
 def check_fire_detection(mask):
-    """Check if some amount of the image is considered as on fire."""
+    """Check if more than 10% of the image is white."""
     white_pixels = np.sum(mask == 255)
     total_pixels = mask.size
-    if white_pixels / total_pixels > 0.05:
-        return "fire detected" + (white_pixels / total_pixels).tostring()
-    return "no fire detected"
+    fire_percentage = (white_pixels / total_pixels) * 100
+    if fire_percentage > 5:
+        return f"fire detected: {fire_percentage:.2f}%"
+    return  f"no fire detected: {fire_percentage:.2f}%"
 
 # Load images (Assume they exist in 'test_img/' folder)
-reference_img = cv2.imread("test_img/HardTest1.jpg")
+reference_img = cv2.imread("test_img/HardTest2.jpg")
 current_img = cv2.imread("test_img/HardTest3.jpg")
 
 # Ensure images are loaded
@@ -124,8 +125,8 @@ else:
     
     result_img, change_mask = remove_unchanged(reference_img, current_img)
     output_img, color_mask, detected_contours = detect_large_color_regions(result_img, change_mask)
-    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, reference_img, current_img)
     
     # Check for fire detection
     fire_status = check_fire_detection(color_mask)
-    print(fire_status)
+    
+    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, reference_img, current_img, fire_status)
