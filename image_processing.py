@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 
 def preprocess_image(image):
     """Blurs and then sharpens the image."""
-    blurred = cv2.GaussianBlur(image, (51, 51), 0)
+    blurred = cv2.GaussianBlur(image, (71, 71), 0)
     sharpen_kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
     sharpened = cv2.filter2D(blurred, -1, sharpen_kernel)
-    return sharpened
+    return blurred, sharpened
 
 def remove_unchanged(reference, current):
     """Removes unchanged parts of the current image by comparing with the reference image."""
@@ -36,6 +36,11 @@ def detect_large_color_regions(image, mask):
     combined_mask = mask_red + mask_yellow + mask_black
     combined_mask = cv2.bitwise_and(combined_mask, mask)  # Apply change mask to remove small specks
     
+    # Fill gaps in the mask
+    kernel = np.ones((10, 10), np.uint8)
+    combined_mask = cv2.dilate(combined_mask, kernel, iterations=3)
+    combined_mask = cv2.erode(combined_mask, kernel, iterations=3)
+    
     # Find contours
     contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
@@ -45,35 +50,63 @@ def detect_large_color_regions(image, mask):
     
     return output, combined_mask, contours
 
-def display_results(reference, current, output, color_mask, original_reference, original_current):
+def display_results(reference, current, output, color_mask, original_reference, original_current, blurred_reference, blurred_current, sharpened_reference, sharpened_current):
     """Displays original images and detected changes."""
-    plt.figure(figsize=(20, 5))
+    plt.figure(figsize=(20, 10))
     
-    plt.subplot(1, 4, 1)
+    plt.subplot(2, 4, 1)
     plt.imshow(cv2.cvtColor(original_reference, cv2.COLOR_BGR2RGB))
     plt.title("Reference Image")
     plt.axis("off")
     
-    plt.subplot(1, 4, 2)
+    plt.subplot(2, 4, 2)
     plt.imshow(cv2.cvtColor(original_current, cv2.COLOR_BGR2RGB))
     plt.title("Current Image")
     plt.axis("off")
     
-    plt.subplot(1, 4, 3)
+    plt.subplot(2, 4, 3)
     plt.imshow(cv2.cvtColor(output, cv2.COLOR_BGR2RGB))
     plt.title("Subtracted Image")
     plt.axis("off")
     
-    plt.subplot(1, 4, 4)
+    plt.subplot(2, 4, 4)
     plt.imshow(color_mask, cmap='gray')
     plt.title("Color Regions Mask")
     plt.axis("off")
     
+    plt.subplot(2, 4, 5)
+    plt.imshow(cv2.cvtColor(blurred_reference, cv2.COLOR_BGR2RGB))
+    plt.title("Blurred Reference Image")
+    plt.axis("off")
+    
+    plt.subplot(2, 4, 6)
+    plt.imshow(cv2.cvtColor(blurred_current, cv2.COLOR_BGR2RGB))
+    plt.title("Blurred Current Image")
+    plt.axis("off")
+    
+    plt.subplot(2, 4, 7)
+    plt.imshow(cv2.cvtColor(sharpened_reference, cv2.COLOR_BGR2RGB))
+    plt.title("Sharpened Reference Image")
+    plt.axis("off")
+    
+    plt.subplot(2, 4, 8)
+    plt.imshow(cv2.cvtColor(sharpened_current, cv2.COLOR_BGR2RGB))
+    plt.title("Sharpened Current Image")
+    plt.axis("off")
+    
     plt.show()
 
+def check_fire_detection(mask):
+    """Check if some amount of the image is considered as on fire."""
+    white_pixels = np.sum(mask == 255)
+    total_pixels = mask.size
+    if white_pixels / total_pixels > 0.05:
+        return "fire detected" + (white_pixels / total_pixels).tostring()
+    return "no fire detected"
+
 # Load images (Assume they exist in 'test_img/' folder)
-reference_img = cv2.imread("test_img/TestImage1.jpg")
-current_img = cv2.imread("test_img/TestImage2.jpg")
+reference_img = cv2.imread("test_img/HardTest1.jpg")
+current_img = cv2.imread("test_img/HardTest3.jpg")
 
 # Ensure images are loaded
 if reference_img is None:
@@ -86,9 +119,13 @@ else:
     original_current_img = current_img.copy()
     
     # Preprocess images
-    reference_img = preprocess_image(reference_img)
-    current_img = preprocess_image(current_img)
+    blurred_reference_img, reference_img = preprocess_image(reference_img)
+    blurred_current_img, current_img = preprocess_image(current_img)
     
     result_img, change_mask = remove_unchanged(reference_img, current_img)
     output_img, color_mask, detected_contours = detect_large_color_regions(result_img, change_mask)
-    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img)
+    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, reference_img, current_img)
+    
+    # Check for fire detection
+    fire_status = check_fire_detection(color_mask)
+    print(fire_status)
