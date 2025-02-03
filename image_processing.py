@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def preprocess_image(image):
-    """Blurs and then sharpens the image."""
+    """Blurs and then sharpens the image using unsharp mask."""
     blurred = cv2.GaussianBlur(image, (71, 71), 0)
-    sharpen_kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
-    sharpened = cv2.filter2D(blurred, -1, sharpen_kernel)
+    # Unsharp mask technique
+    sharpened = cv2.addWeighted(image, 1.5, blurred, -0.5, 0)
     return blurred, sharpened
 
 def remove_unchanged(reference, current):
@@ -120,13 +120,14 @@ else:
     original_current_img = current_img.copy()
     
     # Preprocess images
-    blurred_reference_img, reference_img = preprocess_image(reference_img)
-    blurred_current_img, current_img = preprocess_image(current_img)
+    blurred_reference_img, sharpened_reference_img = preprocess_image(reference_img)
+    blurred_current_img, sharpened_current_img = preprocess_image(current_img)
     
-    result_img, change_mask = remove_unchanged(reference_img, current_img)
+    # Check differences on sharpened images
+    result_img, change_mask = remove_unchanged(sharpened_reference_img, sharpened_current_img)
     output_img, color_mask, detected_contours = detect_large_color_regions(result_img, change_mask)
     
     # Check for fire detection
     fire_status = check_fire_detection(color_mask)
     
-    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, reference_img, current_img, fire_status)
+    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, sharpened_reference_img, sharpened_current_img, fire_status)
