@@ -1,14 +1,11 @@
-<<<<<<< Updated upstream
-#import libraries 
 #import libraries
-=======
+#import libraries
 # complete CAPITALIZED sections
 
 # AUTHOR: Hyunwoo Lee/Aakash Senthilnathan
 # DATE: 3/15/22
 
 # import libraries
->>>>>>> Stashed changes
 from numpy import sqrt
 import math
 import time
@@ -33,14 +30,11 @@ start_time = time.time()
 i = 1  # Photo counter
 tol = 0.01  # Tolerance for timing
 
-<<<<<<< Updated upstream
 # Setup IMU and Camera
-=======
 i = 1
 tol = 0.01
 
 # setup imu and camera
->>>>>>> Stashed changes
 i2c = busio.I2C(board.SCL, board.SDA)
 # sensor = adafruit_bno055.BNO055_I2C(i2c)  # Uncomment if using IMU
 camera = Picamera2()  # UPDATED TO USE PICAMERA2
@@ -51,34 +45,17 @@ time.sleep(2)
 full_res = list(camera.camera_properties['PixelArraySize'])
 camera.set_controls({'ScalerCrop': [0,0] + full_res})
 
-<<<<<<< Updated upstream
-# Function for uploading image to GitHub
-def git_push():
-    try:
-        # Path to your GitHub repository
-        repo = Repo('/home/TaftHS/MITCubeSatVTEC')
-        
-        # Add the new photo to the repository (ensure 'egg' is the correct folder path)
-        repo.git.add('egg')
-        
-        # Commit the changes
-=======
-
 # bonus: function for uploading image to Github
 def git_push():
     try:
         repo = Repo('/home/pi/MITCubeSatVTEC')  # PATH TO YOUR GITHUB REPO
         repo.git.add('egg')  # PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
->>>>>>> Stashed changes
         repo.index.commit('New Photo')
         print('Made the commit')
         
         # Get the remote origin
         origin = repo.remote('origin')
-<<<<<<< Updated upstream
-        
-        
-        
+
         # Push the changes to your branch (adjust the branch name if needed)
         origin.push('main')
         print('Pushed changes')
@@ -86,14 +63,10 @@ def git_push():
         print(f"Couldn't upload to git: {e}")
         import traceback
         traceback.print_exc()
-=======
         print('added remote')
         origin.push()
         print('pushed changes')
-    except:
-        print('Couldn\'t upload to git')
 
->>>>>>> Stashed changes
 
 # SET THRESHOLD
 threshold = 0  # m/s^2 (Estimated Acceleration felt at LEO)
@@ -110,7 +83,6 @@ loopPauseTime = 1  # s
 print("entering main loop!")
 while run_time > (time.time() - start_time):
     target_time = i * rep_time
-<<<<<<< Updated upstream
 
     # TAKE/SAVE/UPLOAD A PICTURE
     if target_time - (time.time() - start_time) < 0:
@@ -126,41 +98,16 @@ while run_time > (time.time() - start_time):
             print("captured photo")
     # Pause between iterations
     sleep(loopPauseTime)
-print("waiting again to push to github!")
-sleep(1)
-
-
-
-=======
-    # TAKE/SAVE/UPLOAD A PICTURE
-    if abs(target_time - (time.time() - start_time)) < tol:
-        print("Took photo")
-
-        name = "Chick"  # Last Name, First Initial  ex. FoxJ
-
-        if name:
-            imgname = ('/home/pi/MITCubeSatVTEC/egg/%s%d' % (name, i))  # change directory to your folder
-            img = camera.capture(imgname + ".jpg")  # take a photo
-            i += 1
-    # PAUSE
->>>>>>> Stashed changes
 
 
 def loadAndCompressImages():
     for j in range(i):
         name = "Chick"
-<<<<<<< Updated upstream
         imgname = (f'/home/TaftHS/MITCubeSatVTEC/egg/{name}{j + 1}.jpg')
         image = Image.open(imgname)
         image_resized = image.resize((1920, 1080))
         image_resized.save(imgname)
-=======
-        imgname = ('/home/pi/MITCubeSatVTEC/egg/%s%d' % (name, i))
-        image = Image.open(imgname)
-        image_resized = image.resize((1920, 1080))
-        image_resized.save(img)
 
 
->>>>>>> Stashed changes
 loadAndCompressImages()
 git_push()
