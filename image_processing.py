@@ -122,8 +122,8 @@ def check_water_detection(mask_blue, mask_grey):
     return  f"no water detected: {water_percentage:.2f}%"
 
 # Load images (Assume they exist in 'test_img/' folder)
-reference_img = cv2.imread("test_img/HardTest2.jpg")
-current_img = cv2.imread("test_img/HardTest1.jpg")
+reference_img = cv2.imread("test_img/HardTest1.jpg")
+current_img = cv2.imread("test_img/HardTest5.jpg")
 
 # Ensure images are loaded
 if reference_img is None:
