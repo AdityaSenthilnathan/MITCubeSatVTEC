@@ -55,23 +55,17 @@ def git_push():
         
         # Get the remote origin
         origin = repo.remote('origin')
-
+        print('added remote')
         # Push the changes to your branch (adjust the branch name if needed)
-        origin.push('main')
-        print('Pushed changes')
+
+        origin.push()
+        print('pushed changes')
+
     except Exception as e:
         print(f"Couldn't upload to git: {e}")
         import traceback
         traceback.print_exc()
-        print('added remote')
-        origin.push()
-        print('pushed changes')
 
-
-# SET THRESHOLD
-threshold = 0  # m/s^2 (Estimated Acceleration felt at LEO)
-photoPauseTime = 1  # s
-loopPauseTime = 1  # s
 
 # SET THRESHOLD
 threshold = 0  # m/s^2 (Estimated Acceleration felt at LEO)
