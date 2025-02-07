@@ -15,6 +15,7 @@ import adafruit_bno055
 from git import Repo
 from picamera import PiCamera
 import numpy as np
+from PIL import Image
 
 rep_time = 5
 run_time = 15
@@ -34,7 +35,7 @@ camera = PiCamera()
 #bonus: function for uploading image to Github
 def git_push():
     try:
-        repo = Repo('/home/pi/MITCubeSatSatickens') #PATH TO YOUR GITHUB REPO
+        repo = Repo('/home/pi/MITCubeSatVTEC') #PATH TO YOUR GITHUB REPO
         repo.git.add('egg') #PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         print('made the commit')
@@ -61,10 +62,18 @@ while run_time > (time.time() - start_time):
         name = "Chick"   #Last Name, First Initial  ex. FoxJ
         
         if name:
-            imgname = ('/home/pi/MITCubeSatSatickens/egg/%s%d' % (name,i)) #change directory to your folder 
+            imgname = ('/home/pi/MITCubeSatVTEC/egg/%s%d' % (name,i)) #change directory to your folder 
             img = camera.capture(imgname+ ".jpg") #take a photo
             i += 1
     #PAUSE
+
+def loadAndCompressImages():
+    for j in range(i):
+        name = "Chick"
+        imgname = ('/home/pi/MITCubeSatVTEC/egg/%s%d' % (name,i))
+        image = Image.open(imgname)
+        image_resized = image.resize((1920, 1080))
+        image_resized.save(img)
 
 git_push()
     
