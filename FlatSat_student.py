@@ -1,11 +1,3 @@
-#import libraries
-#import libraries
-# complete CAPITALIZED sections
-
-# AUTHOR: Hyunwoo Lee/Aakash Senthilnathan
-# DATE: 3/15/22
-
-# import libraries
 from numpy import sqrt
 import math
 import time
@@ -18,13 +10,6 @@ from git import Repo
 from picamera2 import Picamera2  # UPDATED TO USE PICAMERA2
 import numpy as np
 from PIL import Image
-
-
-
-
-
-
-
 
 
 # setup imu and camera
