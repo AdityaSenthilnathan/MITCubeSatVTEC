@@ -52,7 +52,6 @@ def detect_large_color_regions(image, mask):
     return output, combined_mask, contours, mask_blue, mask_grey
 
 def display_results(reference, current, output, color_mask, original_reference, original_current, blurred_reference, blurred_current, sharpened_reference, sharpened_current, fire_status):
-    """Displays original images and detected changes."""
     plt.figure(figsize=(20, 10))
     
     plt.subplot(2, 4, 1)
@@ -100,7 +99,6 @@ def display_results(reference, current, output, color_mask, original_reference, 
     plt.show()
 
 def check_fire_detection(mask):
-    """Check if more than 5% of the image is white."""
     white_pixels = np.sum(mask == 255)
     total_pixels = mask.size
     fire_percentage = (white_pixels / total_pixels) * 100
@@ -109,7 +107,6 @@ def check_fire_detection(mask):
     return  f"no fire detected: {fire_percentage:.2f}%"
 
 def check_water_detection(mask_blue, mask_grey):
-    """Check if more than 50% of the image is blue or grey."""
     blue_pixels = np.sum(mask_blue == 255)
     grey_pixels = np.sum(mask_grey == 255)
     total_pixels = mask_blue.size
