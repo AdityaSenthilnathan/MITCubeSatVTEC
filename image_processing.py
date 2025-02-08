@@ -3,14 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def preprocess_image(image):
-    """Blurs and then sharpens the image using unsharp mask."""
     blurred = cv2.GaussianBlur(image, (19, 19), 0)
     # Unsharp mask technique
     sharpened = cv2.addWeighted(image, 1.5, blurred, -0.5, 0)
     return blurred, sharpened
 
 def remove_unchanged(reference, current):
-    """Removes unchanged parts of the current image by comparing with the reference image."""
     diff = cv2.absdiff(reference, current)  # Compute absolute difference
     gray_diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
     _, mask = cv2.threshold(gray_diff, 30, 255, cv2.THRESH_BINARY)  # Threshold to get changes
@@ -18,7 +16,6 @@ def remove_unchanged(reference, current):
     return result, mask
 
 def detect_large_color_regions(image, mask):
-    """Detects large regions of red, yellow, blue, black, and grey in the given image."""
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     
     # Define color thresholds with a wider range to capture varying fire and water colors
