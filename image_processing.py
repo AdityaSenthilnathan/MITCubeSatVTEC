@@ -49,7 +49,7 @@ def detect_large_color_regions(image, mask):
     output = image.copy()
     cv2.drawContours(output, contours, -1, (0, 255, 0), 2)
     
-    return output, combined_mask, contours, mask_blue, mask_grey
+    return output, combined_mask, contours
 
 def display_results(reference, current, output, color_mask, original_reference, original_current, blurred_reference, blurred_current, sharpened_reference, sharpened_current, fire_status):
     plt.figure(figsize=(20, 10))
@@ -106,15 +106,6 @@ def check_fire_detection(mask):
         return f"fire detected: {fire_percentage:.2f}%"
     return  f"no fire detected: {fire_percentage:.2f}%"
 
-def check_water_detection(mask_blue, mask_grey):
-    blue_pixels = np.sum(mask_blue == 255)
-    grey_pixels = np.sum(mask_grey == 255)
-    total_pixels = mask_blue.size
-    water_percentage = ((blue_pixels + grey_pixels) / total_pixels) * 100
-    if water_percentage > 50:
-        return f"water detected: {water_percentage:.2f}%"
-    return  f"no water detected: {water_percentage:.2f}%"
-
 # Load images (Assume they exist in 'test_img/' folder)
 reference_img = cv2.imread("test_img/HardTest1.jpg")
 current_img = cv2.imread("test_img/HardTest5.jpg")
@@ -135,10 +126,9 @@ else:
     
     # Check differences on sharpened images
     result_img, change_mask = remove_unchanged(sharpened_reference_img, sharpened_current_img)
-    output_img, color_mask, detected_contours, water_mask_blue, water_mask_grey = detect_large_color_regions(result_img, change_mask)
+    output_img, color_mask, detected_contours = detect_large_color_regions(result_img, change_mask)
     
-    # Check for fire and water detection
+    # Check for fire detection
     fire_status = check_fire_detection(color_mask)
-    water_status = check_water_detection(water_mask_blue, water_mask_grey)
     
-    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, sharpened_reference_img, sharpened_current_img, fire_status + " | " + water_status)
+    display_results(original_reference_img, original_current_img, output_img, color_mask, original_reference_img, original_current_img, blurred_reference_img, blurred_current_img, sharpened_reference_img, sharpened_current_img, fire_status)
