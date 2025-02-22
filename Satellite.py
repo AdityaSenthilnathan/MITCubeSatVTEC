@@ -2,7 +2,7 @@ import socket
 
 # Set the server's IP address (replace with the actual IP of the server)
 SERVER_IP = "192.168.86.33"  # Change this to the actual IP of the server
-PORT = 12345  # Must match the server's port
+PORT = 5000  # Must match the server's port
 
 # Create a socket (IPv4, TCP)
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
