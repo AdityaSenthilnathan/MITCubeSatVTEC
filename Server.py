@@ -10,7 +10,6 @@ import shutil
 def monitor(port):
     # Server configuration
     HOST = "0.0.0.0"  # Listen on all available network interfaces
-    print(socket.AF_INET)
     # Create a socket (IPv4, TCP)
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, port))
@@ -28,8 +27,7 @@ def monitor(port):
             break  # Exit if client disconnects
         print(f"Received: {data.decode()}")  # Print received message
 
-        response = input("Reply to client: ")  # Send a response
-        client_socket.sendall(response.encode())
+
 
     client_socket.close()
     server_socket.close()
