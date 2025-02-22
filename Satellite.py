@@ -15,17 +15,19 @@ from PIL import Image
 
 shouldExit = False
 isConnected = False
-client_socket: socket = None
+client_socket = None
 
 def monitor(ip, PORT):
     # Set the server's IP address (replace with the actual IP of the server)
 
     # Create a socket (IPv4, TCP)
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    global client_socket
+    client_socket= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect to the server
     client_socket.connect((ip, PORT))
     print(f"Connected to server at {ip}:{PORT}")
+    global isConnected
     isConnected = True
     while not shouldExit:
 
@@ -42,6 +44,7 @@ def transmit_message(msg):
 
 
 def close_connection():
+    global shouldExit
     shouldExit = True
 
 monitorThread = threading.Thread(target=monitor, args=("192.168.86.33", 5000))
@@ -65,7 +68,7 @@ camera.set_controls({'ScalerCrop': [0, 0] + full_res})
 def git_push():
     try:
         repo = Repo('/home/TaftHS/MITCubeSatVTEC')  # PATH TO YOUR GITHUB REPO
-        repo.git.add('egg')  # PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
+        repo.git.add('New Images')  # PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
         # print('Made the commit')
 
@@ -116,7 +119,7 @@ def mainLoop(num, delay):
 def loadAndCompressImages(i):
     for j in range(int(i)):
         name = "Img"
-        imgname = f'/home/TaftHS/MITCubeSatVTEC/New Images/{name}{j + 1}.jpg'
+        imgname = f'/home/TaftHS/MITCubeSatVTEC/New Images/{name}{j}.jpg'
         image = Image.open(imgname)
         image_resized = image.resize((1920, 1080))
         image_resized.save(imgname)
