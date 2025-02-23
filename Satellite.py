@@ -1,6 +1,6 @@
 from socket import socket
 
-import Common
+from Common import MessageType
 import socket
 import threading
 import time
@@ -11,15 +11,47 @@ import adafruit_bno055
 from git import Repo
 from picamera2 import Picamera2  # UPDATED TO USE PICAMERA2
 from PIL import Image
+#import libraries
+import time
+from adafruit_lsm6ds.lsm6dsox import LSM6DSOX as LSM6DS
+from adafruit_lis3mdl import LIS3MDL
+from enum import IntFlag
+from enum import Enum
+
+class Axis(IntFlag):
+    X = 1
+    Y = 2
+    Z = 4
+
+
+class Command(Enum):
+    NoCommand = 0
+    Picture = 1
+    StartSequence = 2
+    StopSequence = 3
+
+
 
 
 shouldExit = False
 isConnected = False
 client_socket = None
 
+
+currentCommand = Command.NoCommand
+commandArg = ''
+i2c = board.I2C()
+accel_gyro = LSM6DS(i2c)
+mag = LIS3MDL(i2c)
+
+AwaitStartAxis = Axis.Y | Axis.Z
+
 def monitor(ip, PORT):
     # Set the server's IP address (replace with the actual IP of the server)
-
+    global shouldExit
+    global AwaitStartAxis
+    global currentCommand
+    global commandArg
     # Create a socket (IPv4, TCP)
     global client_socket
     client_socket= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,14 +63,40 @@ def monitor(ip, PORT):
     isConnected = True
     while not shouldExit:
 
-        response = client_socket.recv(1024)  # Receive response
-        print(f"Server says: {response.decode()}")
+        response = client_socket.recv(1024).decode()  # Receive response
+        transmit_message(response)
+        print(f"Server says: {response}")
+
+        args = response.split(' ')
+        command = args[0]
+        arg = response.removeprefix(command)
+        if arg[0] == ' ':
+            arg.removeprefix(' ')
+        commandArg = arg
+        if response == MessageType.Exit.value:
+            shouldExit = True
+        elif response == MessageType.Picture.value:
+            currentCommand = Command.Picture
+        elif response == MessageType.AxisX.value:
+            AwaitStartAxis = AwaitStartAxis ^ Axis.X
+            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
+        elif response == MessageType.AxisY.value:
+            AwaitStartAxis = AwaitStartAxis ^ Axis.Y
+            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
+        elif response == MessageType.AxisZ.value:
+            AwaitStartAxis = AwaitStartAxis ^ Axis.Z
+            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
+        elif response == MessageType.StartSequence.value:
+            currentCommand = Command.StartSequence
+        elif response == MessageType.StopSequence.value:
+            currentCommand = Command.StopSequence
+
     client_socket.close()
     return
 
 
 def transmit_message(msg):
-    print(msg)
+    print( f"[Transmitting]: {msg}")
     if isConnected:
         client_socket.sendall(msg.encode())
 
@@ -124,6 +182,17 @@ def loadAndCompressImages(i):
         image_resized = image.resize((1920, 1080))
         image_resized.save(imgname)
 
+def takeAndUploadSinglePicture(name):
+    name = "Img"  # Last Name, First Initial  ex. FoxJ
+    if name:
+        # Save the photo with a unique name
+        imgname = f'/home/TaftHS/MITCubeSatVTEC/egg/{name}.jpg'  # Change directory to your folder
+        camera.capture_file(imgname)  # UPDATED TO USE PICAMERA2
+        transmit_message("captured photo")
+        image = Image.open(imgname)
+        image_resized = image.resize((1920, 1080))
+        image_resized.save(imgname)
+        git_push()
 
 def test(num, delay):
     mainLoop(num, delay)
@@ -132,4 +201,22 @@ def test(num, delay):
     return "img count: " + str(num) + " | Time: " + str(git_push())
 
 
-transmit_message(test(10, 2.5))
+
+def testSequence():
+    while True:
+        if currentCommand == Command.StopSequence:
+            return
+        accelx, accely, accelz = accel_gyro.acceleration
+
+        accelSqaredMag = (accelx * accelx) + (accely * accely) + (accelz * accelz)
+
+
+
+while True:
+    if currentCommand == Command.Picture:
+        name = "Test"
+        if commandArg != '':
+            name = commandArg
+        takeAndUploadSinglePicture(name)
+    if currentCommand == Command.StartSequence:
+        testSequence()

@@ -8,7 +8,10 @@ import threading
 import subprocess
 import shutil
 
+client_socket = None
+
 def monitor(port):
+    global client_socket
     # Server configuration
     HOST = "0.0.0.0"  # Listen on all available network interfaces
     # Create a socket (IPv4, TCP)
@@ -34,10 +37,18 @@ def monitor(port):
     client_socket.close()
     server_socket.close()
 
+def userInput():
+    while True:
+        response = input()  # Send a response
+        print(f"Transmitting: {response}")
+        client_socket.sendall(response.encode())
+
 
 monitorThread = threading.Thread(target=monitor, args=(5000,))
 monitorThread.start()
 
+userInputThread = threading.Thread(target=userInput)
+userInputThread.start()
 
 def check_for_changes():
     try:
