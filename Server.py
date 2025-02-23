@@ -1,6 +1,7 @@
 import image_processing
 import cv2
 import os
+import datetime
 import Common
 import socket
 import threading
@@ -25,7 +26,8 @@ def monitor(port):
         data = client_socket.recv(1024)  # Receive data (max 1024 bytes)
         if not data:
             break  # Exit if client disconnects
-        print(f"Received: {data.decode()}")  # Print received message
+        current_time = datetime.datetime.now();
+        print(f"[{current_time.hour}:{current_time.minute}:{current_time.second}][From {client_address[0]}]: {data.decode()}")  # Print received message
 
 
 
@@ -85,5 +87,5 @@ while True:
         for image in images:
             shutil.copy(f"New Images/{image}", f"Old Images/{image}")
         pull_changes()
-        image_processing.possess_image(cv2.imread("Old Images/Img1.jpg"), cv2.imread("New Images/Img1.jpg"))
+        image_processing.possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img0.jpg"))
 
