@@ -3,7 +3,7 @@ import time
 import os
 import board
 import busio
-from picamera import PiCamera2
+from picamera2 import Picamera2  # UPDATED TO USE PICAMERA2
 import numpy as np
 import sys
 import sensor_calc as sc
