@@ -68,8 +68,8 @@ def monitor(ip, PORT):
         print(f"Server says: {response}")
 
         args = response.split(' ')
-        command = args[0]
-        arg = response.removeprefix(command)
+        command = int(args[0])
+        arg = response.removeprefix(str(command))
         if arg[0] == ' ':
             arg.removeprefix(' ')
         commandArg = arg
