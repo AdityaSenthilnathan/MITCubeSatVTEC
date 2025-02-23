@@ -1,20 +1,24 @@
-import adafruit_bno055
+from numpy import sqrt
+import math
 import time
+from time import sleep
 import os
 import board
 import busio
+import adafruit_bno055
+from git import Repo
 from picamera2 import Picamera2  # UPDATED TO USE PICAMERA2
 import numpy as np
-import sys
-import sensor_calc as sc
-from git import Repo
+from PIL import Image
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor1 = adafruit_bno055.BNO055_I2C(i2c)
-sensor2 = adafruit_bno055.BNO055_I2C(i2c)
-camera = PiCamera()
+sensor = adafruit_bno055.BNO055_I2C(i2c)  # Uncomment if using IMU
+camera = Picamera2()  # UPDATED TO USE PICAMERA2
+camera_config = camera.create_still_configuration()
+camera.configure(camera_config)
+camera.start()
 
 while True:
-	accelX, accelY, accelZ = sensor1.acceleration  # m/s^2
-	magX, magY, magZ = sensor1.magnetic  # gauss
+	accelX, accelY, accelZ = sensor.acceleration  # m/s^2
+	magX, magY, magZ = sensor.magnetic  # gauss
 	print(f"x:{accelX} y:{accelY} z:{accelZ}")

@@ -14,7 +14,7 @@ from PIL import Image
 
 # setup imu and camera
 i2c = busio.I2C(board.SCL, board.SDA)
-# sensor = adafruit_bno055.BNO055_I2C(i2c)  # Uncomment if using IMU
+sensor = adafruit_bno055.BNO055_I2C(i2c)  # Uncomment if using IMU
 camera = Picamera2()  # UPDATED TO USE PICAMERA2
 camera_config = camera.create_still_configuration()
 camera.configure(camera_config)
