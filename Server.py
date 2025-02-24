@@ -38,6 +38,7 @@ def monitor(port):
     server_socket.close()
 
 def userInput():
+    global client_socket
     while True:
         response = input()  # Send a response
         print(f"Transmitting: {response}")
@@ -52,12 +53,13 @@ userInputThread.start()
 
 def check_for_changes():
     try:
+        print("test")
         # Fetch the latest changes from the remote without merging
         subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'fetch'], check=True)
-
+        print("test2")
         # Compare local branch with the remote branch to see if there are updates
         result = subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'status', '-uno'], capture_output=True, text=True)
-
+        print(result.stdout)
         # Check if the local branch is behind the remote
         if "Your branch is behind" in result.stdout:
             return True  # There are new changes
@@ -70,7 +72,7 @@ def check_for_changes():
 def pull_changes():
     try:
         # Pull the latest changes from the remote repository
-        subprocess.run(['git', 'pull'], check=True)
+        subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'pull'], check=True)
         print("Successfully pulled new changes.")
         # Run your custom function after pulling changes
     except subprocess.CalledProcessError as e:
@@ -93,6 +95,7 @@ def list_files_in_directory(directory_path):
 
 
 while True:
+    print("checking!")
     if check_for_changes():
         images = list_files_in_directory("New Images")
         for image in images:
