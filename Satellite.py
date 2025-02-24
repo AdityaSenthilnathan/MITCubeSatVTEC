@@ -72,6 +72,7 @@ def monitor(ip, PORT):
             shouldExit = True
         elif response == str(MessageType.Picture.value):
             currentCommand = Command.Picture
+            transmit_message(f"Command: {str(currentCommand)}")
         elif response == str(MessageType.AxisX.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.X
             transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
@@ -83,12 +84,16 @@ def monitor(ip, PORT):
             transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
         elif response == str(MessageType.StartSequence.value):
             currentCommand = Command.StartSequence
+            transmit_message(f"Command: {str(currentCommand)}")
         elif response == str(MessageType.StopSequence.value):
             currentCommand = Command.StopSequence
+            transmit_message(f"Command: {str(currentCommand)}")
         elif response == str(MessageType.Arm.value):
             currentCommand = Command.Arm
+            transmit_message(f"Command: {str(currentCommand)}")
         elif response == str(MessageType.Disarm.value):
             currentCommand = Command.Disarm
+            transmit_message(f"Command: {str(currentCommand)}")
 
     client_socket.close()
     return
@@ -104,7 +109,7 @@ def close_connection():
     global shouldExit
     shouldExit = True
 
-monitorThread = threading.Thread(target=monitor, args=("192.168.86.38", 5000))
+monitorThread = threading.Thread(target=monitor, args=("192.168.86.33", 5000))
 monitorThread.start()
 
 sleep(2)
@@ -209,17 +214,26 @@ def testSequence():
         accelSqaredMag = (accelx * accelx) + (accely * accely) + (accelz * accelz)
 
 def armedSimpleloop():
+    transmit_message("Entering Armed Simple Loop")
     continueLoop = True
     while continueLoop:
         accelx, accely, accelz = accel_gyro.acceleration
 
         accelSqaredMag = (accelx * accelx) + (accely * accely)
         if accelSqaredMag > 3:
-            mainLoop(2, 5)
+            transmit_message("Sequence Triggered")
+            num = 2
+            mainLoop(num, 5)
+            transmit_message("Compressing Images")
+            loadAndCompressImages(num)
+            transmit_message("Pushing to github")
+            git_push()
+            transmit_message("Pushed to github")
             continueLoop = False
 
 
 def advancedMainLoop():
+    global currentCommand
     while True:
         if currentCommand == Command.Picture:
             name = "Test"
@@ -230,3 +244,6 @@ def advancedMainLoop():
             testSequence()
         if currentCommand == Command.Arm:
             armedSimpleloop()
+            currentCommand = Command.NoCommand
+            
+advancedMainLoop()
