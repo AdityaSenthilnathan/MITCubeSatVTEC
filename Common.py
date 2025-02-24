@@ -9,3 +9,5 @@ class MessageType(Enum):
     AxisZ = 4
     StartSequence = 5
     StopSequence = 6
+    Arm = 7
+    Disarm = 8

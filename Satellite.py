@@ -1,5 +1,5 @@
+from operator import truediv
 from socket import socket
-
 from Common import MessageType
 import socket
 import threading
@@ -17,6 +17,7 @@ from adafruit_lsm6ds.lsm6dsox import LSM6DSOX as LSM6DS
 from adafruit_lis3mdl import LIS3MDL
 from enum import IntFlag
 from enum import Enum
+import datetime
 
 class Axis(IntFlag):
     X = 1
@@ -29,6 +30,8 @@ class Command(Enum):
     Picture = 1
     StartSequence = 2
     StopSequence = 3
+    Arm = 4
+    Disarm = 5
 
 
 
@@ -39,7 +42,6 @@ client_socket = None
 
 
 currentCommand = Command.NoCommand
-commandArg = ''
 i2c = board.I2C()
 accel_gyro = LSM6DS(i2c)
 mag = LIS3MDL(i2c)
@@ -51,7 +53,6 @@ def monitor(ip, PORT):
     global shouldExit
     global AwaitStartAxis
     global currentCommand
-    global commandArg
     # Create a socket (IPv4, TCP)
     global client_socket
     client_socket= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,29 +68,27 @@ def monitor(ip, PORT):
         transmit_message(response)
         print(f"Server says: {response}")
 
-        args = response.split(' ')
-        command = int(args[0])
-        arg = response.removeprefix(str(command))
-        if arg[0] == ' ':
-            arg.removeprefix(' ')
-        commandArg = arg
-        if response == MessageType.Exit.value:
+        if response == str(MessageType.Exit.value):
             shouldExit = True
-        elif response == MessageType.Picture.value:
+        elif response == str(MessageType.Picture.value):
             currentCommand = Command.Picture
-        elif response == MessageType.AxisX.value:
+        elif response == str(MessageType.AxisX.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.X
             transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
-        elif response == MessageType.AxisY.value:
+        elif response == str(MessageType.AxisY.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.Y
             transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
-        elif response == MessageType.AxisZ.value:
+        elif response == str(MessageType.AxisZ.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.Z
             transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
-        elif response == MessageType.StartSequence.value:
+        elif response == str(MessageType.StartSequence.value):
             currentCommand = Command.StartSequence
-        elif response == MessageType.StopSequence.value:
+        elif response == str(MessageType.StopSequence.value):
             currentCommand = Command.StopSequence
+        elif response == str(MessageType.Arm.value):
+            currentCommand = Command.Arm
+        elif response == str(MessageType.Disarm.value):
+            currentCommand = Command.Disarm
 
     client_socket.close()
     return
@@ -182,11 +181,10 @@ def loadAndCompressImages(i):
         image_resized = image.resize((1920, 1080))
         image_resized.save(imgname)
 
-def takeAndUploadSinglePicture(name):
-    name = "Img"  # Last Name, First Initial  ex. FoxJ
-    if name:
+def takeAndUploadSinglePicture(filename):
+    if filename:
         # Save the photo with a unique name
-        imgname = f'/home/TaftHS/MITCubeSatVTEC/egg/{name}.jpg'  # Change directory to your folder
+        imgname = f'/home/TaftHS/MITCubeSatVTEC/egg/{filename}.jpg'  # Change directory to your folder
         camera.capture_file(imgname)  # UPDATED TO USE PICAMERA2
         transmit_message("captured photo")
         image = Image.open(imgname)
@@ -210,13 +208,25 @@ def testSequence():
 
         accelSqaredMag = (accelx * accelx) + (accely * accely) + (accelz * accelz)
 
+def armedSimpleloop():
+    continueLoop = True
+    while continueLoop:
+        accelx, accely, accelz = accel_gyro.acceleration
+
+        accelSqaredMag = (accelx * accelx) + (accely * accely)
+        if accelSqaredMag > 3:
+            mainLoop(2, 5)
+            continueLoop = False
 
 
-while True:
-    if currentCommand == Command.Picture:
-        name = "Test"
-        if commandArg != '':
-            name = commandArg
-        takeAndUploadSinglePicture(name)
-    if currentCommand == Command.StartSequence:
-        testSequence()
+def advancedMainLoop():
+    while True:
+        if currentCommand == Command.Picture:
+            name = "Test"
+            current_time = datetime.datetime.now()
+
+            takeAndUploadSinglePicture(f"{current_time.hour}:{current_time.minute}:{current_time.second}")
+        if currentCommand == Command.StartSequence:
+            testSequence()
+        if currentCommand == Command.Arm:
+            armedSimpleloop()
