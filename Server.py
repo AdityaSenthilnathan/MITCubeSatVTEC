@@ -51,55 +51,5 @@ monitorThread.start()
 userInputThread = threading.Thread(target=userInput)
 userInputThread.start()
 
-def check_for_changes():
-    try:
-        print("test")
-        # Fetch the latest changes from the remote without merging
-        subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'fetch'], check=True)
-        print("test2")
-        # Compare local branch with the remote branch to see if there are updates
-        result = subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'status', '-uno'], capture_output=True, text=True)
-        print(result.stdout)
-        # Check if the local branch is behind the remote
-        if "Your branch is behind" in result.stdout:
-            return True  # There are new changes
-        else:
-            return False  # No new changes
-    except subprocess.CalledProcessError as e:
-        print(f"Error checking repository status: {e}")
-        return False
 
-def pull_changes():
-    try:
-        # Pull the latest changes from the remote repository
-        subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'pull'], check=True)
-        print("Successfully pulled new changes.")
-        # Run your custom function after pulling changes
-    except subprocess.CalledProcessError as e:
-        print(f"Error pulling changes: {e}")
-
-def list_files_in_directory(directory_path):
-    try:
-        # Get all files and directories in the specified directory
-        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
-        return files
-    except FileNotFoundError:
-        print(f"Error: The directory {directory_path} does not exist.")
-        return []
-    except PermissionError:
-        print(f"Error: Permission denied to access {directory_path}.")
-        return []
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return []
-
-
-while True:
-    print("checking!")
-    if check_for_changes():
-        images = list_files_in_directory("New Images")
-        for image in images:
-            shutil.copy(f"New Images/{image}", f"Old Images/{image}")
-        pull_changes()
-        image_processing.possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img0.jpg"))
 
