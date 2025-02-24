@@ -104,7 +104,7 @@ def close_connection():
     global shouldExit
     shouldExit = True
 
-monitorThread = threading.Thread(target=monitor, args=("192.168.86.33", 5000))
+monitorThread = threading.Thread(target=monitor, args=("192.168.86.38", 5000))
 monitorThread.start()
 
 sleep(2)

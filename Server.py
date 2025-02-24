@@ -53,10 +53,10 @@ userInputThread.start()
 def check_for_changes():
     try:
         # Fetch the latest changes from the remote without merging
-        subprocess.run(['git', 'fetch'], check=True)
+        subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'fetch'], check=True)
 
         # Compare local branch with the remote branch to see if there are updates
-        result = subprocess.run(['git', 'status', '-uno'], capture_output=True, text=True)
+        result = subprocess.run(['C:\\Program Files\\Git\\cmd\\git.exe', 'status', '-uno'], capture_output=True, text=True)
 
         # Check if the local branch is behind the remote
         if "Your branch is behind" in result.stdout:
