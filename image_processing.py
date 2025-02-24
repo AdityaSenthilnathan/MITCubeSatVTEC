@@ -1,6 +1,7 @@
 import shutil
 import subprocess
 
+import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -179,7 +180,7 @@ def list_files_in_directory(directory_path):
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
-
+firstCommit = True
 if __name__ == "__main__":
     while True:
         print("checking!")
@@ -188,4 +189,6 @@ if __name__ == "__main__":
             for image in images:
                 shutil.copy(f"New Images/{image}", f"Old Images/{image}")
             pull_changes()
-            possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img0.jpg"))
+            #if not firstCommit:
+            possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img1.jpg"))
+            firstCommit = False
