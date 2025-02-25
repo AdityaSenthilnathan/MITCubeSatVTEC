@@ -35,7 +35,8 @@ class Command(Enum):
 
 
 
-
+delay = 5.0
+startDelay = 2.0
 shouldExit = False
 isConnected = False
 client_socket = None
@@ -50,6 +51,8 @@ AwaitStartAxis = Axis.Y | Axis.Z
 
 def monitor(ip, PORT):
     # Set the server's IP address (replace with the actual IP of the server)
+    global delay
+    global startDelay
     global shouldExit
     global AwaitStartAxis
     global currentCommand
@@ -68,32 +71,40 @@ def monitor(ip, PORT):
         transmit_message(response)
         print(f"Server says: {response}")
 
-        if response == str(MessageType.Exit.value):
+        if response == str(MessageType.Exit.value): # unused
             shouldExit = True
-        elif response == str(MessageType.Picture.value):
+        elif response == str(MessageType.Picture.value): # unused at the moment
             currentCommand = Command.Picture
-            transmit_message(f"Command: {str(currentCommand)}")
+            transmit_message(f"Command: {str(currentCommand)}") # unused at the moment
         elif response == str(MessageType.AxisX.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.X
-            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
+            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}") # unused at the moment
         elif response == str(MessageType.AxisY.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.Y
-            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
+            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}") # unused at the moment
         elif response == str(MessageType.AxisZ.value):
             AwaitStartAxis = AwaitStartAxis ^ Axis.Z
-            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}")
+            transmit_message(f"Axis: {bin(AwaitStartAxis)[2:]}") # unused at the moment
         elif response == str(MessageType.StartSequence.value):
             currentCommand = Command.StartSequence
-            transmit_message(f"Command: {str(currentCommand)}")
+            transmit_message(f"Command: {str(currentCommand)}") # unused at the moment
         elif response == str(MessageType.StopSequence.value):
             currentCommand = Command.StopSequence
             transmit_message(f"Command: {str(currentCommand)}")
         elif response == str(MessageType.Arm.value):
             currentCommand = Command.Arm
-            transmit_message(f"Command: {str(currentCommand)}")
+            transmit_message(f"Command: {str(currentCommand)}") # unused at the moment
         elif response == str(MessageType.Disarm.value):
             currentCommand = Command.Disarm
             transmit_message(f"Command: {str(currentCommand)}")
+        elif response.startswith("D"):
+            args = response.split(' ')
+            delay = float(args[1])
+        elif response.startswith("SD"):
+            args = response.split(' ')
+            startDelay = float(args[1])
+
+
 
     client_socket.close()
     return
@@ -126,9 +137,11 @@ time.sleep(2)
 full_res = list(camera.camera_properties['PixelArraySize'])
 camera.set_controls({'ScalerCrop': [0, 0] + full_res})
 
+
 def git_pull():
     repo = Repo('/home/TaftHS/MITCubeSatVTEC')
     origin = repo.remote('origin')
+    origin.pull()
 
 
 # bonus: function for uploading image to GitHub
@@ -201,6 +214,7 @@ def loadAndCompressImages(i):
         image_resized = image.resize((1920, 1080))
         image_resized.save(imgname)
 
+
 def takeAndUploadSinglePicture(filename):
     if filename:
         # Save the photo with a unique name
@@ -211,6 +225,7 @@ def takeAndUploadSinglePicture(filename):
         image_resized = image.resize((1920, 1080))
         image_resized.save(imgname)
         git_push()
+
 
 def test(num, delay):
     mainLoop(num, delay, 0)
@@ -237,7 +252,7 @@ def armedSimpleloop():
         if accelSqaredMag > 5:
             transmit_message("Sequence Triggered")
             num = 2
-            mainLoop(num, 5, 2)
+            mainLoop(num, delay, startDelay)
 
             continueLoop = False
 

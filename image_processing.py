@@ -180,6 +180,8 @@ def list_files_in_directory(directory_path):
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
+
+
 firstCommit = True
 if __name__ == "__main__":
     while True:
