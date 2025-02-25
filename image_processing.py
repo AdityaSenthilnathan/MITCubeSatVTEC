@@ -189,6 +189,6 @@ if __name__ == "__main__":
             for image in images:
                 shutil.copy(f"New Images/{image}", f"Old Images/{image}")
             pull_changes()
-            #if not firstCommit:
-            possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img1.jpg"))
+            if not firstCommit:
+                possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img0.jpg"))
             firstCommit = False

@@ -100,7 +100,7 @@ def monitor(ip, PORT):
 
 
 def transmit_message(msg):
-    print( f"[Transmitting]: {msg}")
+    print(f"[Transmitting]: {msg}")
     if isConnected:
         client_socket.sendall(msg.encode())
 
@@ -108,6 +108,7 @@ def transmit_message(msg):
 def close_connection():
     global shouldExit
     shouldExit = True
+
 
 monitorThread = threading.Thread(target=monitor, args=("192.168.86.33", 5000))
 monitorThread.start()
@@ -125,6 +126,10 @@ time.sleep(2)
 full_res = list(camera.camera_properties['PixelArraySize'])
 camera.set_controls({'ScalerCrop': [0, 0] + full_res})
 
+def git_pull():
+    repo = Repo('/home/TaftHS/MITCubeSatVTEC')
+    origin = repo.remote('origin')
+
 
 # bonus: function for uploading image to GitHub
 def git_push():
@@ -132,33 +137,32 @@ def git_push():
         repo = Repo('/home/TaftHS/MITCubeSatVTEC')  # PATH TO YOUR GITHUB REPO
         repo.git.add('New Images')  # PATH TO YOUR IMAGES FOLDER WITHIN YOUR GITHUB REPO
         repo.index.commit('New Photo')
-        # print('Made the commit')
+        transmit_message('Made the commit')
 
         # Get the remote origin
         origin = repo.remote('origin')
-        # print('added remote')
+        transmit_message('added remote')
         # Push the changes to your branch (adjust the branch name if needed)
-        startTime = time.time()
+        # startTime = time.time()
         origin.push()
-        endTime = time.time()
+        # endTime = time.time()
 
-        # print('pushed changes')
-        return endTime - startTime
+        transmit_message('pushed changes')
+        # return endTime - startTime
     except Exception as e:
-        print(f"Couldn't upload to git: {e}")
+        transmit_message(f"Couldn't upload to git: {e}")
         import traceback
         traceback.print_exc()
 
 
-# SET THRESHOLD
-threshold = 0  # m/s^2 (Estimated Acceleration felt at LEO)
 loopPauseTime = 0.1  # s
 
 
-def mainLoop(num, delay):
+def mainLoop(num, delay, startDelay):
 
     i = 0  # Photo counter
-    transmit_message("entering main loop!")
+    transmit_message("entering main loop. ")
+    sleep(startDelay)
     start_time = time.time()
     while i < num:
 
@@ -167,15 +171,26 @@ def mainLoop(num, delay):
             transmit_message("capturing photo")
 
             # Name for the photo
-            name = "Img"  # Last Name, First Initial  ex. FoxJ
+            name = "Img"
             if name:
                 # Save the photo with a unique name
                 imgname = f'/home/TaftHS/MITCubeSatVTEC/New Images/{name}{i}.jpg'  # Change directory to your folder
                 camera.capture_file(imgname)  # UPDATED TO USE PICAMERA2
                 i += 1
-                transmit_message("captured photo")
+                transmit_message("Captured photo, Compressing Images ")
+                loadAndCompressImage(f'{name}{i}')
+                transmit_message("Pushing to github")
+                git_push()
+                transmit_message("Pushed to github")
         # Pause between iterations
         sleep(loopPauseTime)
+
+
+def loadAndCompressImage(name):
+        imgname = f'/home/TaftHS/MITCubeSatVTEC/New Images/{name}.jpg'
+        image = Image.open(imgname)
+        image_resized = image.resize((1920, 1080))
+        image_resized.save(imgname)
 
 
 def loadAndCompressImages(i):
@@ -198,11 +213,10 @@ def takeAndUploadSinglePicture(filename):
         git_push()
 
 def test(num, delay):
-    mainLoop(num, delay)
+    mainLoop(num, delay, 0)
     loadAndCompressImages(num)
 
     return "img count: " + str(num) + " | Time: " + str(git_push())
-
 
 
 def testSequence():
@@ -220,15 +234,11 @@ def armedSimpleloop():
         accelx, accely, accelz = accel_gyro.acceleration
 
         accelSqaredMag = (accelx * accelx) + (accely * accely)
-        if accelSqaredMag > 3:
+        if accelSqaredMag > 5:
             transmit_message("Sequence Triggered")
             num = 2
-            mainLoop(num, 5)
-            transmit_message("Compressing Images")
-            loadAndCompressImages(num)
-            transmit_message("Pushing to github")
-            git_push()
-            transmit_message("Pushed to github")
+            mainLoop(num, 5, 2)
+
             continueLoop = False
 
 
@@ -236,14 +246,16 @@ def advancedMainLoop():
     global currentCommand
     while True:
         if currentCommand == Command.Picture:
-            name = "Test"
             current_time = datetime.datetime.now()
 
             takeAndUploadSinglePicture(f"{current_time.hour}:{current_time.minute}:{current_time.second}")
+            currentCommand = Command.NoCommand
         if currentCommand == Command.StartSequence:
-            testSequence()
+            #testSequence()
+            currentCommand = Command.NoCommand
         if currentCommand == Command.Arm:
             armedSimpleloop()
             currentCommand = Command.NoCommand
-            
-advancedMainLoop()
+
+if __name__ == "__main__":
+    advancedMainLoop()
