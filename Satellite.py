@@ -249,7 +249,7 @@ def armedSimpleloop():
         accelx, accely, accelz = accel_gyro.acceleration
 
         accelSqaredMag = (accelx * accelx) + (accely * accely)
-        if accelSqaredMag > 5:
+        if accelSqaredMag > 1:
             transmit_message("Sequence Triggered")
             num = 2
             mainLoop(num, delay, startDelay)

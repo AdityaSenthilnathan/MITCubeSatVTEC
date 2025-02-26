@@ -141,13 +141,10 @@ def possess_image(reference_img, current_img):
 
 def check_for_changes():
     try:
-        print("test")
         # Fetch the latest changes from the remote without merging
         subprocess.run(['git', 'fetch'], check=True)
-        print("test2")
         # Compare local branch with the remote branch to see if there are updates
         result = subprocess.run(['git', 'status', '-uno'], capture_output=True, text=True)
-        print(result.stdout)
         # Check if the local branch is behind the remote
         if "Your branch is behind" in result.stdout:
             return True  # There are new changes
@@ -185,7 +182,7 @@ def list_files_in_directory(directory_path):
 firstCommit = True
 if __name__ == "__main__":
     while True:
-        print("checking!")
+        #print("checking!")
         if check_for_changes():
             images = list_files_in_directory("New Images")
             for image in images:
@@ -193,4 +190,6 @@ if __name__ == "__main__":
             pull_changes()
             if not firstCommit:
                 possess_image(cv2.imread("Old Images/Img0.jpg"), cv2.imread("New Images/Img0.jpg"))
-            firstCommit = False
+                firstCommit = True
+            else:
+                firstCommit = False
