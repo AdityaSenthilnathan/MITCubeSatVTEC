@@ -198,6 +198,33 @@ def mainLoop(num, delay, startDelay):
         # Pause between iterations
         sleep(loopPauseTime)
 
+def testMainLoop(num, delay, startDelay):
+
+    i = 0  # Photo counter
+    transmit_message("entering main loop. ")
+    sleep(startDelay)
+    start_time = time.time()
+    while i < num:
+
+        # TAKE/SAVE/UPLOAD A PICTURE
+        if (i * delay) - (time.time() - start_time) < 0:
+            transmit_message("capturing photo")
+
+            # Name for the photo
+            name = "Img"
+            if name:
+                # Save the photo with a unique name
+                imgname = f'/home/TaftHS/MITCubeSatVTEC/New Images/{name}{i}.jpg'  # Change directory to your folder
+                camera.capture_file(imgname)  # UPDATED TO USE PICAMERA2
+                i += 1
+                transmit_message("Captured Image")
+        # Pause between iterations
+        sleep(loopPauseTime)
+    transmit_message("Compressing Images ")
+    loadAndCompressImage(f'{name}{i}')
+    transmit_message("Pushing to github")
+    git_push()
+    transmit_message("Pushed to github")
 
 def loadAndCompressImage(name):
         imgname = f'/home/TaftHS/MITCubeSatVTEC/New Images/{name}.jpg'
@@ -227,11 +254,11 @@ def takeAndUploadSinglePicture(filename):
         git_push()
 
 
-def test(num, delay):
-    mainLoop(num, delay, 0)
-    loadAndCompressImages(num)
+def test(num, numImages, delay):
+    for i in range(num):
+        testMainLoop(numImages, delay, 0)
 
-    return "img count: " + str(num) + " | Time: " + str(git_push())
+
 
 
 def testSequence():
