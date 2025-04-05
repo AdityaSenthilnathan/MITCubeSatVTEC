@@ -1,2 +1,2 @@
-# MITCubeSatSatickens
-GitHub Repository for the Satickens
+# MITCubeSatVTEC
+GitHub Repository for VTEC
